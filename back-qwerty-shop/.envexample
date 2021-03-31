@@ -1,0 +1,4 @@
+JWT_EXPIRES_IN=Time to expire here
+JWT_SECRET_KEY=Secret key here
+MONGODB_URI=URI Key here
+PORT=Port here

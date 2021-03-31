@@ -1,0 +1,110 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input AddAddressInput {
+  addressLineOne: String!
+  addressLineTwo: String!
+  city: String!
+  country: String!
+  default: Boolean!
+  fullName: String!
+  phoneNumber: String!
+  state: String!
+  zipCode: String!
+}
+
+type Address {
+  addressLineOne: String!
+  addressLineTwo: String!
+  city: String!
+  country: String!
+  default: Boolean!
+  fullName: String!
+  phoneNumber: String!
+  state: String!
+  zipCode: String!
+}
+
+type AuthUser {
+  _id: ID!
+  addresses: [Address!]!
+  cart: [CartItem!]!
+  email: String!
+  token: String!
+}
+
+type CartItem {
+  color: String!
+  itemId: String!
+  size: Boolean!
+}
+
+type CIPQS {
+  color: String!
+  image: String!
+  variants: [PQS!]!
+}
+
+input CreateUserInput {
+  cart: [String!]
+  email: String!
+  password: String!
+}
+
+type Item {
+  _id: ID!
+  CIPQS: [CIPQS!]!
+  description: String!
+  displayImage: String!
+  name: String!
+  type: String!
+}
+
+type ItemType {
+  items: [Item!]!
+  type: String!
+}
+
+type Mutation {
+  addAddress(addAddressData: AddAddressInput!): UserInfo!
+  createUser(createUserData: CreateUserInput!): String!
+  signIn(signInData: SignInInput!): AuthUser!
+}
+
+type PQS {
+  price: Float!
+  quantity: Float!
+  size: String!
+}
+
+type Query {
+  findItemById(itemId: String!): SingleItemType!
+  findItemsByType(itemType: String!): ItemType!
+  getUserData: User!
+}
+
+input SignInInput {
+  email: String!
+  password: String!
+}
+
+type SingleItemType {
+  item: Item!
+  type: String!
+}
+
+type User {
+  _id: ID!
+  addresses: [Address!]!
+  cart: [CartItem!]!
+  email: String!
+  password: String!
+}
+
+type UserInfo {
+  _id: ID!
+  addresses: [Address!]!
+  cart: [CartItem!]!
+  email: String!
+}
