@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
     NavLink,
     useParams
 } from "react-router-dom";
-import { gql, useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { motion } from 'framer-motion';
+import { useToasts } from 'react-toast-notifications'
 
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
@@ -32,13 +33,37 @@ const FIND_ITEMS_BY_NAME = gql`
   }
 `;
 
+const ADD_CART_TO_USER = gql`
+  mutation addCartToUser($CartInput: CartInput!) {
+    addCartToUser(cart: $CartInput) {
+        cart {
+            itemId,
+            color,
+            size
+        },
+    }
+  }
+`;
+
 const Item = (props: any) => {
+    const { addToast, removeAllToasts } = useToasts();
     const { itemId } = useParams<{ itemId: string }>();
+
     const { loading, error, data } = useQuery(FIND_ITEMS_BY_NAME, {
         fetchPolicy: "cache-and-network",
         nextFetchPolicy: "cache-first",
         variables: { itemId }
     });
+
+    const [addCartToUser, cartLoading] = useMutation(ADD_CART_TO_USER, {
+        update(_) {
+            addToast('Successfully added item to cart.', {
+                appearance: 'success',
+                autoDismiss: true,
+            });
+        }
+    });
+
     const loadingText = 'Getting item details!'.split('');
     const item = data && data.findItemById ? data.findItemById.item : null;
     let CIPQS: any = {};
@@ -75,22 +100,63 @@ const Item = (props: any) => {
         const existingUser = checkCachedUser();
         const token = localStorage.getItem('token');
 
-        if (existingUser && token) {
+        /* Do all the cart stuff and management */
+        let cart = existingUser && existingUser.cart && existingUser.cart.length > 0 ?
+            JSON.parse(JSON.stringify(existingUser.cart)) :
+            [];
 
+        if (cart && cart.length > 0) {
+            let doesItemExist = false;
+            /* Loop through cart and check if item exists */
+            for (let i = 0; i < cart.length; i++) {
+                if (cart[i].itemId === item._id && cart[i].color === currentColor && cart[i].size === currentSize) {
+                    delete cart[i].__typename
+                    console.log(cart[i])
+                    if (cart[i].quantity + currentQuantity > CIPQS[currentColor][currentSize].quantity) {
+                        removeAllToasts();
+                        addToast('Failed to add item to cart.  Total quantity exceeds available amount.', {
+                            appearance: 'error',
+                            autoDismiss: true,
+                        });
+                        return;
+                    } else {
+                        doesItemExist = true;
+                        cart[i].quantity += currentQuantity;
+                    }
+                }
+            }
+
+            if (!doesItemExist) cart.push({
+                itemId: item._id,
+                color: currentColor,
+                size: currentSize,
+                quantity: currentQuantity
+            });
         } else {
-            let cart = existingUser && existingUser.cart && existingUser.cart.length > 0 ? existingUser.cart.slice(0) : [];
             cart.push({
                 itemId: item._id,
                 color: currentColor,
-                size: currentSize
+                size: currentSize,
+                quantity: currentQuantity
             });
-            localStorage.setItem('localCart', JSON.stringify(cart));
+        }
 
+        /* Write data to user or store locally */
+        if (existingUser && token) {
+            addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
+                removeAllToasts();
+                addToast(e.message, {
+                    appearance: 'error',
+                    autoDismiss: true,
+                });
+            })
+        } else {
+            localStorage.setItem('localCart', JSON.stringify(cart));
             client.writeFragment({
                 id: 'userInfo',
                 fragment:
                     gql`
-                    fragment UserInfo on AuthUser {
+                    fragment UserInfo on UserNoPW {
                         _id,
                         addresses {
                             country,
@@ -104,17 +170,23 @@ const Item = (props: any) => {
                             default
                         },
                         email,
-                        token,
                         cart {
                             itemId,
                             color,
-                            size
+                            size,
+                            quantity
                         }
                   }
                 `,
                 data: {
                     cart: cart
                 }
+            });
+
+            removeAllToasts();
+            addToast('Successfully added item to cart.', {
+                appearance: 'success',
+                autoDismiss: true,
             });
         }
     };

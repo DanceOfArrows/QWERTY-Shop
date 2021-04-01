@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
 
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';

@@ -10,15 +10,22 @@ import App from './App';
 import './index.scss';
 import './fonts/Lato-Regular.ttf';
 
+const getToken = () => {
+  return localStorage.getItem('token');
+};
+
 const setupApollo = async () => {
   const apiBaseUrl = process.env.NODE_ENV === "production" ? '' : 'http://localhost:8080';
   const cache = new InMemoryCache({
     addTypename: true,
     typePolicies: {
-      AuthUser: {
+      AuthToken: {
+        keyFields: () => 'token',
+        merge: true,
+      },
+      UserNoPW: {
         keyFields: () => 'userInfo',
         merge: true,
-        mutationType: true,
       },
       ItemType: {
         keyFields: (data) => {
@@ -31,7 +38,7 @@ const setupApollo = async () => {
           return `Item:${data['item']._id}`
         },
         merge: true,
-      }
+      },
     }
   });
 
@@ -58,12 +65,10 @@ const setupApollo = async () => {
   });
 
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
-
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : "",
+        authorization: getToken() ? `Bearer ${getToken()}` : "",
       }
     }
   });

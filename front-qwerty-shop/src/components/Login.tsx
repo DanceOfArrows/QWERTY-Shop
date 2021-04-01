@@ -8,24 +8,6 @@ import LoadingSpinner from './LoadingSpinner';
 const LOG_IN = gql`
   mutation signIn($SignInInput: SignInInput!) {
     signIn(signInData: $SignInInput) {
-        _id,
-        addresses {
-            country,
-            fullName,
-            phoneNumber,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zipCode,
-            default
-        },
-        cart {
-            itemId,
-            color,
-            size
-        },
-        email,
         token
     }
   }
@@ -40,10 +22,8 @@ const Login = (props: any) => {
 
     const [login, loading] = useMutation(LOG_IN, {
         update(_, data) {
-            setToken(data.data.signIn.token)
             localStorage.setItem('token', data.data.signIn.token);
-
-            props.history.push('/');
+            setToken(data.data.signIn.token)
         },
     });
 

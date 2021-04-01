@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import { gql, useLazyQuery } from '@apollo/client';
 import { AnimatePresence } from 'framer-motion';
+import { ToastProvider } from 'react-toast-notifications';
 
 import * as Components from './components/exportComponents';
 import { ApolloClientInterface } from './components/exportInterfaces';
@@ -26,7 +27,7 @@ const {
 } = Components;
 const { AuthRoute, ProtectedRoute } = AuthRoutes;
 
-const GET_USER_INFO = gql`
+export const GET_USER_INFO = gql`
   query getUserData {
     getUserData {
       _id,
@@ -44,7 +45,8 @@ const GET_USER_INFO = gql`
         cart {
             itemId,
             color,
-            size
+            size,
+            quantity
         },
         email,
     }
@@ -67,7 +69,8 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       id: 'userInfo',
       fragment:
         gql`
-        fragment UserInfo on AuthUser {
+        fragment UserInfo on UserNoPW {
+            _id,
             addresses {
               country,
               fullName,
@@ -83,7 +86,8 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             cart {
               itemId,
               color,
-              size
+              size,
+              quantity
             }
         }
       `,
@@ -97,27 +101,58 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   }, [])
 
   const localToken = localStorage.getItem('token');
+  const cartToStore = localCart ? JSON.parse(localCart) : [];
   if (localToken && localToken != '' && token === '') {
-
     /* Verify user or grab user data */
     if (!error && data) {
       setToken(localToken);
     }
-
-    if (error) {
-      localStorage.removeItem('token');
-      console.log(error)
-    }
-  }
-
-  if (!checkCachedUser()) {
-    const cartToStore = localCart ? JSON.parse(localCart) : [];
-
+  } else if (!localToken && token === '') {
     client.writeFragment({
       id: 'userInfo',
       fragment:
         gql`
-          fragment UserInfo on AuthUser {
+            fragment UserInfo on UserNoPW {
+                _id,
+                addresses {
+                    country,
+                    fullName,
+                    phoneNumber,
+                    addressLineOne,
+                    addressLineTwo,
+                    city,
+                    state,
+                    zipCode,
+                    default
+                },
+                email,
+                cart {
+                    itemId,
+                    color,
+                    size,
+                    quantity
+                }
+          }
+        `,
+      data: {
+        _id: null,
+        addresses: [],
+        cart: cartToStore,
+        email: null,
+        token: null,
+      }
+    });
+    localStorage.removeItem('token');
+    console.log(error);
+  }
+
+  const existingUser = checkCachedUser();
+  if (!existingUser || existingUser.email === null) {
+    client.writeFragment({
+      id: 'userInfo',
+      fragment:
+        gql`
+          fragment UserInfo on UserNoPW {
               _id,
               addresses {
                   country,
@@ -131,11 +166,11 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                   default
               },
               email,
-              token,
               cart {
                 itemId,
                 addresses,
                 size
+                quantity
               },
         }
       `,
@@ -143,8 +178,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
         _id: null,
         addresses: [],
         email: null,
-        token: null,
-        cart: cartToStore
+        cart: cartToStore,
       }
     });
   }
@@ -169,7 +203,11 @@ const App: React.FC<ApolloClientInterface> = (props) => {
           </div>
         </div>
       ) : (
-        <>
+        <ToastProvider
+          autoDismiss
+          autoDismissTimeout={6000}
+          placement='bottom-left'
+        >
           <NavBar checkCachedUser={checkCachedUser} client={client} setToken={setToken} token={token} />
           <div className='qwerty-shop-app' style={document.location.pathname === '/' ? { marginTop: 0 } : undefined}>
             <AnimatePresence exitBeforeEnter={true} >
@@ -188,7 +226,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             </AnimatePresence>
           </div>
           <Footer />
-        </>
+        </ToastProvider>
       )
       }
 

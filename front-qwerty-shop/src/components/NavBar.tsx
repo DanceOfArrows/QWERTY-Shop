@@ -43,7 +43,7 @@ const NavBar: React.FC<NavBar> = (props: any) => {
             id: 'userInfo',
             fragment:
                 gql`
-                fragment UserInfo on AuthUser {
+                fragment UserInfo on UserNoPW {
                     _id,
                     addresses {
                         country,
@@ -57,11 +57,11 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                         default
                     },
                     email,
-                    token,
                     cart {
                         itemId,
                         color,
-                        size
+                        size,
+                        quantity
                     }
               }
             `,
@@ -69,7 +69,6 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                 _id: null,
                 addresses: [],
                 email: null,
-                token: null,
                 cart: [],
             }
         });

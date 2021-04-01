@@ -37,7 +37,7 @@ const AddAddress = (props: any) => {
                 id: 'userInfo',
                 fragment:
                     gql`
-                    fragment UserInfo on AuthUser {
+                    fragment UserInfo on UserNoPW {
                         _id,
                         addresses {
                             country,
@@ -51,11 +51,11 @@ const AddAddress = (props: any) => {
                             default
                         },
                         email,
-                        token,
                         cart {
                             itemId,
                             color,
-                            size
+                            size,
+                            quantity
                         }
                   }
                 `,
