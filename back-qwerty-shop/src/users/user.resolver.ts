@@ -12,10 +12,9 @@ import { UseGuards } from '@nestjs/common';
 import { Schema as MongooseSchema } from 'mongoose';
 
 import { AuthGuard } from "../auth/auth.gaurd";
-import { AddAddressInput, CreateUserInput } from './user.inputs';
-import { Address, CartItem, User, UserDocument } from './user.model';
+import { AddAddressInput, CartInput, CreateUserInput } from './user.inputs';
+import { Address, CartItem, UserNoPW, UserDocument } from './user.model';
 import { UsersService } from './users.service';
-
 
 @ObjectType()
 class UserInfo {
@@ -29,7 +28,7 @@ class UserInfo {
     cart: CartItem[];
 };
 
-@Resolver(() => User)
+@Resolver(() => UserNoPW)
 export class UserResolver {
     constructor(
         private usersService: UsersService
@@ -38,11 +37,20 @@ export class UserResolver {
     @Mutation(() => UserInfo)
     @UseGuards(AuthGuard)
     addAddress(
-        @Context('user') user: User,
+        @Context('user') user: UserNoPW,
         @Args('addAddressData') addAddressData: AddAddressInput,
     ) {
         const newAddressData = { email: user.email, ...addAddressData }
         return this.usersService.addAddress(newAddressData);
+    };
+
+    @Mutation(() => UserNoPW)
+    @UseGuards(AuthGuard)
+    async addCartToUser(
+        @Context('user') user: UserNoPW,
+        @Args('cart') cart: CartInput,
+    ) {
+        return this.usersService.updateUserCart(user, cart);
     };
 
     @Mutation(() => String)
@@ -50,10 +58,9 @@ export class UserResolver {
         return this.usersService.createUser(createUserData);
     };
 
-    @Query(() => User)
+    @Query(() => UserNoPW)
     @UseGuards(AuthGuard)
-    getUserData(@Context('user') user: User) {
-        console.log('Fetching user data!')
+    getUserData(@Context('user') user: UserNoPW) {
         return this.usersService.getUserByEmail(user.email);
     };
 };

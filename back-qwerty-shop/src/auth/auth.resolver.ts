@@ -9,19 +9,11 @@ import {
 
 import { AuthService } from './auth.service';
 import { SignInInput } from './auth.inputs';
-import { Address, CartItem } from '../users/user.model';
-import { Schema as MongooseSchema } from 'mongoose';
+// import { Address, CartItem, UserNoPW } from '../users/user.model';
+// import { Schema as MongooseSchema } from 'mongoose';
 
 @ObjectType()
-class AuthUser {
-    @Field(() => ID)
-    readonly _id: MongooseSchema.Types.ObjectId;
-    @Field(() => String)
-    readonly email: string;
-    @Field(() => [Address])
-    addresses: Address[];
-    @Field(() => [CartItem])
-    cart: CartItem[];
+class AuthToken {
     @Field(() => String)
     token: string;
 };
@@ -32,7 +24,7 @@ export class AuthResolver {
         private authService: AuthService
     ) { }
 
-    @Mutation(() => AuthUser)
+    @Mutation(() => AuthToken)
     async signIn(@Args('signInData') signInData: SignInInput) {
         return await this.authService.login(signInData);
     };

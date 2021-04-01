@@ -6,7 +6,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { SignInInput } from './auth.inputs';
-import { User, UserDocument } from '../users/user.model';
+import { UserNoPW, UserDocument } from '../users/user.model';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
         private jwtService: JwtService,
     ) { };
 
-    getUserToken(user: User): string {
+    getUserToken(user: UserNoPW): string {
         const payload = {
             email: user.email,
         };
@@ -30,10 +30,9 @@ export class AuthService {
 
         // Return user data without password if the password matches
         if (user && bcrypt.compareSync(password, user.password)) {
-            const { password, ...result } = user;
             const token = this.getUserToken(user);
 
-            return { ...result, token };
+            return { token };
         } else if (user && !bcrypt.compareSync(password, user.password)) {
             throw new Error('The password is incorrect.');
         };
@@ -45,7 +44,7 @@ export class AuthService {
         return null;
     };
 
-    async verifyUserToken(token: string): Promise<User | undefined> {
+    async verifyUserToken(token: string): Promise<UserNoPW | undefined> {
         const decoded = this.jwtService.verify(token, {
             secret: this.configService.get<string>('JWT_SECRET_KEY'),
         });
@@ -53,11 +52,12 @@ export class AuthService {
         const { email } = decoded;
 
         const user = await this.userModel.findOne({ email });
+        const { password, ...userInfo } = user;
 
         if (!user) {
             throw new Error('Unable to get the user from decoded token.');
         }
 
-        return user;
+        return { ...userInfo };
     };
 };

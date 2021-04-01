@@ -26,18 +26,26 @@ type Address {
   zipCode: String!
 }
 
-type AuthUser {
-  _id: ID!
-  addresses: [Address!]!
-  cart: [CartItem!]!
-  email: String!
+type AuthToken {
   token: String!
+}
+
+input CartInput {
+  items: [CartItemInput!]!
 }
 
 type CartItem {
   color: String!
-  itemId: String!
-  size: Boolean!
+  itemId: ID!
+  quantity: Float!
+  size: String!
+}
+
+input CartItemInput {
+  color: String!
+  itemId: ID!
+  quantity: Float!
+  size: String!
 }
 
 type CIPQS {
@@ -47,7 +55,6 @@ type CIPQS {
 }
 
 input CreateUserInput {
-  cart: [String!]
   email: String!
   password: String!
 }
@@ -68,8 +75,9 @@ type ItemType {
 
 type Mutation {
   addAddress(addAddressData: AddAddressInput!): UserInfo!
+  addCartToUser(cart: CartInput!): UserNoPW!
   createUser(createUserData: CreateUserInput!): String!
-  signIn(signInData: SignInInput!): AuthUser!
+  signIn(signInData: SignInInput!): AuthToken!
 }
 
 type PQS {
@@ -81,7 +89,7 @@ type PQS {
 type Query {
   findItemById(itemId: String!): SingleItemType!
   findItemsByType(itemType: String!): ItemType!
-  getUserData: User!
+  getUserData: UserNoPW!
 }
 
 input SignInInput {
@@ -94,15 +102,14 @@ type SingleItemType {
   type: String!
 }
 
-type User {
+type UserInfo {
   _id: ID!
   addresses: [Address!]!
   cart: [CartItem!]!
   email: String!
-  password: String!
 }
 
-type UserInfo {
+type UserNoPW {
   _id: ID!
   addresses: [Address!]!
   cart: [CartItem!]!

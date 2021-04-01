@@ -110,7 +110,6 @@ const Item = (props: any) => {
             /* Loop through cart and check if item exists */
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].itemId === item._id && cart[i].color === currentColor && cart[i].size === currentSize) {
-                    delete cart[i].__typename
                     console.log(cart[i])
                     if (cart[i].quantity + currentQuantity > CIPQS[currentColor][currentSize].quantity) {
                         removeAllToasts();
@@ -143,6 +142,8 @@ const Item = (props: any) => {
 
         /* Write data to user or store locally */
         if (existingUser && token) {
+            cart.forEach((cartItem: any) => delete cartItem.__typename);
+            console.log(cart)
             addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
                 removeAllToasts();
                 addToast(e.message, {

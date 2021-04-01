@@ -45,22 +45,44 @@ export class Address {
 @ObjectType()
 @Schema()
 export class CartItem {
-    @Field(() => String)
+    @Field(() => ID)
     @Prop({ required: true })
-    itemId: string;
+    itemId: MongooseSchema.Types.ObjectId;
 
     @Field(() => String)
     @Prop({ required: true })
     color: string;
 
-    @Field(() => Boolean)
-    @Prop({ default: false })
-    size: boolean;
+    @Field(() => String)
+    @Prop({ required: true })
+    size: string;
+
+    @Field(() => Number)
+    @Prop({ required: true })
+    quantity: number;
 };
 
 @ObjectType()
+export class UserNoPW {
+    @Field(() => ID)
+    _id: MongooseSchema.Types.ObjectId;
+
+    @Field(() => String)
+    @Prop({ required: true, unique: true })
+    email: string;
+
+    @Field(() => [Address])
+    @Prop()
+    addresses: Address[];
+
+    @Field(() => [CartItem])
+    @Prop()
+    cart: CartItem[];
+}
+
+@ObjectType()
 @Schema()
-export class User {
+class User {
     @Field(() => ID)
     _id: MongooseSchema.Types.ObjectId;
 
