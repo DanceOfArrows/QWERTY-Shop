@@ -57,7 +57,6 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   const { client } = props;
   const [token, setToken] = useState('');
   const location = useLocation();
-  const localCart = localStorage.getItem('localCart');
   const loadingText = 'Checking user info!'.split('');
   const [getUserInfo, { data, error, loading }] = useLazyQuery(GET_USER_INFO, {
     fetchPolicy: 'network-only',
@@ -101,7 +100,6 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   }, [])
 
   const localToken = localStorage.getItem('token');
-  const cartToStore = localCart ? JSON.parse(localCart) : [];
   if (localToken && localToken != '' && token === '') {
     /* Verify user or grab user data */
     if (!error && data) {
@@ -137,13 +135,12 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       data: {
         _id: null,
         addresses: [],
-        cart: cartToStore,
+        cart: [],
         email: null,
-        token: null,
       }
     });
     localStorage.removeItem('token');
-    console.log(error);
+    // console.log(error);
   }
 
   const existingUser = checkCachedUser();
@@ -178,7 +175,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
         _id: null,
         addresses: [],
         email: null,
-        cart: cartToStore,
+        cart: [],
       }
     });
   }

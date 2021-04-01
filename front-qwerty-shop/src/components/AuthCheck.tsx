@@ -48,7 +48,7 @@ export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
     });
 
     useEffect(() => {
-        if (token && !existingUser._id) {
+        if (token && (!existingUser || !existingUser._id)) {
             getUserInfo();
         }
     }, [token])
@@ -58,7 +58,7 @@ export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
             path={path}
             exact={exact}
             render={(reactProps) =>
-                !existingUser._id || !token ?
+                !existingUser || !existingUser._id || !token ?
                     <Component {...reactProps} checkCachedUser={checkCachedUser} setToken={setToken} /> :
                     <Redirect to='/' />
             }

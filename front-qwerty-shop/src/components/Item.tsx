@@ -110,7 +110,6 @@ const Item = (props: any) => {
             /* Loop through cart and check if item exists */
             for (let i = 0; i < cart.length; i++) {
                 if (cart[i].itemId === item._id && cart[i].color === currentColor && cart[i].size === currentSize) {
-                    console.log(cart[i])
                     if (cart[i].quantity + currentQuantity > CIPQS[currentColor][currentSize].quantity) {
                         removeAllToasts();
                         addToast('Failed to add item to cart.  Total quantity exceeds available amount.', {
@@ -145,6 +144,7 @@ const Item = (props: any) => {
 
         /* Write data to user or store locally */
         if (existingUser && token) {
+            console.log(cart)
             addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
                 removeAllToasts();
                 addToast(e.message, {
@@ -153,37 +153,9 @@ const Item = (props: any) => {
                 });
             })
         } else {
+            localStorage.removeItem('localCart');
             localStorage.setItem('localCart', JSON.stringify(cart));
-            client.writeFragment({
-                id: 'userInfo',
-                fragment:
-                    gql`
-                    fragment UserInfo on UserNoPW {
-                        _id,
-                        addresses {
-                            country,
-                            fullName,
-                            phoneNumber,
-                            addressLineOne,
-                            addressLineTwo,
-                            city,
-                            state,
-                            zipCode,
-                            default
-                        },
-                        email,
-                        cart {
-                            itemId,
-                            color,
-                            size,
-                            quantity
-                        }
-                  }
-                `,
-                data: {
-                    cart: cart
-                }
-            });
+            localStorage.removeItem('localCart');
 
             removeAllToasts();
             addToast('Successfully added item to cart.', {

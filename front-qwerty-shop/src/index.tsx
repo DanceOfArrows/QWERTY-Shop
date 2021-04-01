@@ -45,9 +45,9 @@ const setupApollo = async () => {
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
       graphQLErrors.map(({ message }) => {
-        console.log(
-          `[GraphQL error]: Message: ${message}`,
-        )
+        // console.log(
+        //   `[GraphQL error]: Message: ${message}`,
+        // )
 
         if (message === 'Invalid token' || message === 'Forbidden resource') {
           localStorage.removeItem('token');
@@ -56,7 +56,7 @@ const setupApollo = async () => {
     }
 
     if (networkError) {
-      console.log(`[Network error]: ${networkError}`);
+      // console.log(`[Network error]: ${networkError}`);
     }
   });
 
