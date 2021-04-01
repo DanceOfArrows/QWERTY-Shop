@@ -140,10 +140,11 @@ const Item = (props: any) => {
             });
         }
 
+        /* Remove __typename from cart items */
+        cart.forEach((cartItem: any) => delete cartItem.__typename);
+
         /* Write data to user or store locally */
         if (existingUser && token) {
-            cart.forEach((cartItem: any) => delete cartItem.__typename);
-            console.log(cart)
             addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
                 removeAllToasts();
                 addToast(e.message, {
