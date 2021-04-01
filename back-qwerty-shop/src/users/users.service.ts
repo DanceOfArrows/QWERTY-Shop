@@ -74,10 +74,6 @@ export class UsersService {
             {
                 lean: true,
                 new: true
-            },
-            (err, doc) => {
-                if (err) console.log(err);
-                else console.log(doc)
             }
         );
 

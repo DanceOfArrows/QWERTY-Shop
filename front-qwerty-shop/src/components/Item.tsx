@@ -39,7 +39,8 @@ const ADD_CART_TO_USER = gql`
         cart {
             itemId,
             color,
-            size
+            size,
+            quantity
         },
     }
   }

@@ -3,6 +3,7 @@ import { Route, Redirect } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/client';
 
 import { GET_USER_INFO } from '../App';
+import LoadingSpinner from './LoadingSpinner';
 
 interface AuthCheck {
     checkCachedUser: any;
@@ -42,7 +43,8 @@ export const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
 export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
     const { checkCachedUser, component: Component, exact, path, setToken, token } = props;
     const existingUser = checkCachedUser();
-    const [getUserInfo, { data, error: getUserError, loading }] = useLazyQuery(GET_USER_INFO, {
+    const loadingText = 'Checking user info!'.split('');
+    const [getUserInfo, { called, loading, data }] = useLazyQuery(GET_USER_INFO, {
         fetchPolicy: 'network-only',
         nextFetchPolicy: 'network-only'
     });
@@ -54,14 +56,36 @@ export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
     }, [token])
 
     return (
-        <Route
-            path={path}
-            exact={exact}
-            render={(reactProps) =>
-                !existingUser || !existingUser._id || !token ?
-                    <Component {...reactProps} checkCachedUser={checkCachedUser} setToken={setToken} /> :
-                    <Redirect to='/' />
+        <>
+            {
+                loading ? (
+                    <div className='qwerty-shop-loading-full'>
+                        <LoadingSpinner />
+                        <div className='qwerty-shop-loading-text-container'>
+                            {
+                                loadingText.map((char, idx) => (
+                                    <div
+                                        className={`qwerty-shop-loading-text-${idx}`}
+                                        key={`qwerty-shop-loading-text-${idx}`}
+                                    >
+                                        {char}
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    </div>
+                ) : (
+                    <Route
+                        path={path}
+                        exact={exact}
+                        render={(reactProps) =>
+                            !existingUser || !existingUser._id || !token ?
+                                <Component {...reactProps} checkCachedUser={checkCachedUser} setToken={setToken} /> :
+                                <Redirect to='/' />
+                        }
+                    />
+                )
             }
-        />
+        </>
     );
 }
