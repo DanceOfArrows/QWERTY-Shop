@@ -15,6 +15,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 const {
   AddAddress,
   AuthRoutes,
+  Cart,
   Footer,
   Home,
   Item,
@@ -210,7 +211,14 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             <AnimatePresence exitBeforeEnter={true} >
               <Switch location={location} key={location.pathname}>
                 <Route exact path='/' component={Home} />
-                <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/addaddress' client={client} component={AddAddress} setToken={setToken} token={token} />
+                <ProtectedRoute
+                  checkCachedUser={checkCachedUser}
+                  exact path='/addaddress'
+                  client={client}
+                  component={AddAddress}
+                  setToken={setToken}
+                  token={token}
+                />
                 <Route exact path='/products' component={ProductCategories} />
                 <Route exact path='/products/:productType' component={Product} />
                 <Route
@@ -219,6 +227,15 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                 <AuthRoute checkCachedUser={checkCachedUser} exact path='/login' component={Login} setToken={setToken} token={token} />
                 <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} />
                 <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/profile' component={Profile} setToken={setToken} token={token} />
+                <Route exact path='/cart' render={
+                  (reactProps) =>
+                    <Cart
+                      {...reactProps}
+                      checkCachedUser={checkCachedUser}
+                      client={client}
+                      token={token}
+                    />
+                } />
               </Switch>
             </AnimatePresence>
           </div>

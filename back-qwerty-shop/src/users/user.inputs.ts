@@ -38,6 +38,9 @@ class CartItemInput {
 
     @Field(() => Number)
     quantity: number;
+
+    @Field(() => String)
+    image: string;
 }
 
 @InputType()

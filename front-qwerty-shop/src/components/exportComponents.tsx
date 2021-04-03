@@ -1,5 +1,6 @@
 import AddAddress from './AddAddress';
 import * as AuthRoutes from './AuthCheck';
+import Cart from './Cart';
 import Footer from './Footer';
 import Home from './Home';
 import Item from './Item';
@@ -13,6 +14,7 @@ import SignUp from './SignUp';
 export {
     AddAddress,
     AuthRoutes,
+    Cart,
     Footer,
     Home,
     Item,

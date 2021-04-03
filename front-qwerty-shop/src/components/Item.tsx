@@ -38,6 +38,7 @@ const ADD_CART_TO_USER = gql`
     addCartToUser(cart: $CartInput) {
         cart {
             itemId,
+            image,
             color,
             size,
             quantity
@@ -77,7 +78,8 @@ const Item = (props: any) => {
                 const variantData = itemColor.variants[i];
                 const { price, quantity, size } = variantData;
 
-                CIPQS[itemColor.color][size] = { price, quantity }
+                CIPQS[itemColor.color][size] = { price, quantity };
+                CIPQS[itemColor.color]['image'] = itemColor.image;
                 if (!sizes.includes(size)) sizes.push(size);
             };
         });
@@ -129,19 +131,22 @@ const Item = (props: any) => {
                 itemId: item._id,
                 color: currentColor,
                 size: currentSize,
-                quantity: currentQuantity
+                quantity: currentQuantity,
+                image: CIPQS[currentColor]['image'],
             });
         } else {
             cart.push({
                 itemId: item._id,
                 color: currentColor,
                 size: currentSize,
-                quantity: currentQuantity
+                quantity: currentQuantity,
+                image: CIPQS[currentColor]['image'],
             });
         }
 
         /* Remove __typename from cart items */
         cart.forEach((cartItem: any) => delete cartItem.__typename);
+        console.log(cart)
 
         /* Write data to user or store locally */
         if (existingUser && token) {

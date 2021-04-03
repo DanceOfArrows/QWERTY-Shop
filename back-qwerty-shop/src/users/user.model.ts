@@ -60,6 +60,10 @@ export class CartItem {
     @Field(() => Number)
     @Prop({ required: true })
     quantity: number;
+
+    @Field(() => String)
+    @Prop({ required: true })
+    image: string;
 };
 
 @ObjectType()
@@ -98,7 +102,7 @@ class User {
     @Prop()
     addresses: Address[];
 
-    @Field(() => [CartItem])
+    @Field(() => [CartItem], { nullable: 'itemsAndList' })
     @Prop()
     cart: CartItem[];
 };
