@@ -55,7 +55,9 @@ const AddAddress = (props: any) => {
                             itemId,
                             color,
                             size,
-                            quantity
+                            quantity,
+                            image,
+                            name
                         }
                   }
                 `,

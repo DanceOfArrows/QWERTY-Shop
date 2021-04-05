@@ -47,7 +47,9 @@ export const GET_USER_INFO = gql`
             itemId,
             color,
             size,
-            quantity
+            quantity,
+            image,
+            name
         },
         email,
     }
@@ -87,7 +89,9 @@ const App: React.FC<ApolloClientInterface> = (props) => {
               itemId,
               color,
               size,
-              quantity
+              quantity,
+              image,
+              name
             }
         }
       `,
@@ -98,7 +102,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
 
   useEffect(() => {
     getUserInfo();
-  }, [])
+  }, [token])
 
   const localToken = localStorage.getItem('token');
   if (localToken && localToken != '' && token === '') {
@@ -129,7 +133,9 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                     itemId,
                     color,
                     size,
-                    quantity
+                    quantity,
+                    image,
+                    name
                 }
           }
         `,
@@ -144,42 +150,43 @@ const App: React.FC<ApolloClientInterface> = (props) => {
     // console.log(error);
   }
 
-  const existingUser = checkCachedUser();
-  if (!existingUser || existingUser.email === null) {
-    client.writeFragment({
-      id: 'userInfo',
-      fragment:
-        gql`
-          fragment UserInfo on UserNoPW {
-              _id,
-              addresses {
-                  country,
-                  fullName,
-                  phoneNumber,
-                  addressLineOne,
-                  addressLineTwo,
-                  city,
-                  state,
-                  zipCode,
-                  default
-              },
-              email,
-              cart {
-                itemId,
-                addresses,
-                size
-                quantity
-              },
-        }
-      `,
-      data: {
-        _id: null,
-        addresses: [],
-        email: null,
-        cart: [],
-      }
-    });
-  }
+  // const existingUser = checkCachedUser();
+  // if (!existingUser || existingUser._id === null) {
+  //   client.writeFragment({
+  //     id: 'userInfo',
+  //     fragment:
+  //       gql`
+  //         fragment UserInfo on UserNoPW {
+  //             _id,
+  //             addresses {
+  //                 country,
+  //                 fullName,
+  //                 phoneNumber,
+  //                 addressLineOne,
+  //                 addressLineTwo,
+  //                 city,
+  //                 state,
+  //                 zipCode,
+  //                 default
+  //             },
+  //             email,
+  //             cart {
+  //               itemId,
+  //               addresses,
+  //               size
+  //               quantity,
+  //               image
+  //             },
+  //       }
+  //     `,
+  //     data: {
+  //       _id: null,
+  //       addresses: [],
+  //       email: null,
+  //       cart: [],
+  //     }
+  //   });
+  // }
 
 
   return (

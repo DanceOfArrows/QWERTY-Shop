@@ -61,7 +61,9 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                         itemId,
                         color,
                         size,
-                        quantity
+                        quantity,
+                        image,
+                        name
                     }
               }
             `,
@@ -81,7 +83,7 @@ const NavBar: React.FC<NavBar> = (props: any) => {
 
         if (document.location.pathname === '/') document.addEventListener("scroll", handleScroll);
 
-        if (isCachedUser && token) setLoggedIn(true);
+        if (isCachedUser && isCachedUser._id && token) setLoggedIn(true);
         else setLoggedIn(false);
 
         return () => {

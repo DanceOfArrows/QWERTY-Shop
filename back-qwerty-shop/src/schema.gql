@@ -38,6 +38,7 @@ type CartItem {
   color: String!
   image: String!
   itemId: ID!
+  name: String!
   quantity: Float!
   size: String!
 }
@@ -46,6 +47,7 @@ input CartItemInput {
   color: String!
   image: String!
   itemId: ID!
+  name: String!
   quantity: Float!
   size: String!
 }

@@ -41,7 +41,8 @@ const ADD_CART_TO_USER = gql`
             image,
             color,
             size,
-            quantity
+            quantity,
+            name
         },
     }
   }
@@ -121,6 +122,7 @@ const Item = (props: any) => {
                         });
                         return;
                     } else {
+                        console.log(cart[i])
                         doesItemExist = true;
                         cart[i].quantity += currentQuantity;
                     }
@@ -133,6 +135,7 @@ const Item = (props: any) => {
                 size: currentSize,
                 quantity: currentQuantity,
                 image: CIPQS[currentColor]['image'],
+                name: item.name,
             });
         } else {
             cart.push({
@@ -141,6 +144,7 @@ const Item = (props: any) => {
                 size: currentSize,
                 quantity: currentQuantity,
                 image: CIPQS[currentColor]['image'],
+                name: item.name,
             });
         }
 
@@ -159,9 +163,7 @@ const Item = (props: any) => {
                 });
             })
         } else {
-            localStorage.removeItem('localCart');
             localStorage.setItem('localCart', JSON.stringify(cart));
-            localStorage.removeItem('localCart');
 
             removeAllToasts();
             addToast('Successfully added item to cart.', {

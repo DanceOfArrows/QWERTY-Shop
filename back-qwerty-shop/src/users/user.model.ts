@@ -51,6 +51,10 @@ export class CartItem {
 
     @Field(() => String)
     @Prop({ required: true })
+    name: string;
+
+    @Field(() => String)
+    @Prop({ required: true })
     color: string;
 
     @Field(() => String)

@@ -31,6 +31,9 @@ class CartItemInput {
     itemId: MongooseSchema.Types.ObjectId;
 
     @Field(() => String)
+    name: string;
+
+    @Field(() => String)
     color: string;
 
     @Field(() => String)
