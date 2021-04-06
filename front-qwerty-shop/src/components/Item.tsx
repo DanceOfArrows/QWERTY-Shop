@@ -33,7 +33,7 @@ const FIND_ITEMS_BY_NAME = gql`
   }
 `;
 
-const ADD_CART_TO_USER = gql`
+export const ADD_CART_TO_USER = gql`
   mutation addCartToUser($CartInput: CartInput!) {
     addCartToUser(cart: $CartInput) {
         cart {
@@ -51,6 +51,7 @@ const ADD_CART_TO_USER = gql`
 const Item = (props: any) => {
     const { addToast, removeAllToasts } = useToasts();
     const { itemId } = useParams<{ itemId: string }>();
+    const token = localStorage.getItem('token');
 
     const { loading, error, data } = useQuery(FIND_ITEMS_BY_NAME, {
         fetchPolicy: "cache-and-network",
@@ -102,7 +103,6 @@ const Item = (props: any) => {
     const addToCart = () => {
         const { checkCachedUser, client } = props;
         const existingUser = checkCachedUser();
-        const token = localStorage.getItem('token');
 
         /* Do all the cart stuff and management */
         let cart = existingUser && existingUser.cart && existingUser.cart.length > 0 ?
@@ -150,9 +150,8 @@ const Item = (props: any) => {
 
         /* Remove __typename from cart items */
         cart.forEach((cartItem: any) => delete cartItem.__typename);
-        console.log(cart)
 
-        /* Write data to user or store locally */
+        /* Write data to user */
         if (existingUser && token) {
             console.log(cart)
             addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
@@ -162,14 +161,6 @@ const Item = (props: any) => {
                     autoDismiss: true,
                 });
             })
-        } else {
-            localStorage.setItem('localCart', JSON.stringify(cart));
-
-            removeAllToasts();
-            addToast('Successfully added item to cart.', {
-                appearance: 'success',
-                autoDismiss: true,
-            });
         }
     };
 
@@ -309,7 +300,13 @@ const Item = (props: any) => {
                                                     onClick={(e) => handleQuantityChange(e, false)}
                                                 >-</div>
                                             </div>
-                                            <div className='qwerty-shop-item-addToCart' onClick={addToCart}>Add to Cart</div>
+                                            {
+                                                token ? (
+                                                    <div className='qwerty-shop-item-addToCart' onClick={addToCart}>Add to Cart</div>
+                                                ) : (
+                                                    <div className='qwerty-shop-item-addToCart-noToken'>Sign in to add to cart!</div>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                 </div>

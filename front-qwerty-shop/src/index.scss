@@ -684,9 +684,17 @@ $productDivs: 0, 1, 2, 3, 4, 5;
     }
 }
 
+.qwerty-shop-item-addToCart-noToken {
+    margin-left: 12px;
+    padding: 12px;
+    white-space: nowrap;
+    width: max-content;
+}
+
 .qwerty-shop-item-variation-btn, .qwerty-shop-item-variation-unavailable-btn, .qwerty-shop-item-addToCart {
     margin-right: 12px;
     padding: 12px;
+    
     width: max-content;
 }
 
@@ -1067,10 +1075,15 @@ $productDivs: 0, 1, 2, 3, 4, 5;
         width: 35%;
 
         * {
-            border: solid 2px #1C1C1D;
+            border: none;
             border-radius: 6px;
             padding: 12px;
             cursor: pointer;
+            transition: all 300ms ease;
+
+            &:active {
+                transform: scale(0.8);
+            }
         }
     }
 }

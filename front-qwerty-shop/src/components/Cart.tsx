@@ -1,21 +1,46 @@
 import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
+import { useToasts } from 'react-toast-notifications'
 
+import { ADD_CART_TO_USER } from './Item';
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
 const Cart = (props: any) => {
     document.title = 'QWERTY Shop - Cart';
+    const { addToast, removeAllToasts } = useToasts();
     const userInfo = props.checkCachedUser();
-    const localCart = localStorage.getItem('localCart') ? JSON.parse(localStorage.getItem('localCart') || '[]') : [];
-    const cart = !userInfo || !userInfo._id ?
-        localCart && localCart.length > 0 ? localCart : [] :
-        userInfo && userInfo._id ? userInfo.cart : [];
+    const cart = userInfo.cart;
 
-    console.log(userInfo)
-    console.log(cart);
+    const [addCartToUser, cartLoading] = useMutation(ADD_CART_TO_USER, {
+        update(_) {
+            removeAllToasts();
+            addToast('Successfully emptied cart.', {
+                appearance: 'success',
+                autoDismiss: true,
+            });
+        }
+    });
+
+    const handleEmptyCart = () => {
+        if (userInfo.cart.length === 0) {
+            removeAllToasts();
+            addToast('Cart is already empty.', {
+                appearance: 'info',
+                autoDismiss: true,
+            });
+            return;
+        }
+        addCartToUser({ variables: { CartInput: { items: [] } } }).catch(e => {
+            removeAllToasts();
+            addToast(e.message, {
+                appearance: 'error',
+                autoDismiss: true,
+            });
+        })
+    }
 
     return (
         <motion.div
@@ -43,12 +68,17 @@ const Cart = (props: any) => {
                                     <div className='qwerty-shop-cart-item-quantity'>Qty: {cartItem.quantity}</div>
                                 </div>
                             ))
-                        ) : <div>Cart is empty!</div>
+                        ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
                     }
                 </div>
                 <div className='qwerty-shop-cart-buttons-container'>
-                    <NavLink to='/checkout'>Checkout</NavLink>
-                    <button>Empty Cart</button>
+                    {
+                        cart && cart.length > 0 ? (
+                            <NavLink to='/checkout'>Checkout</NavLink>
+                        ) : <div className='qwerty-shop-cart-checkoutCrossed'>Checkout</div>
+                    }
+
+                    <button onClick={handleEmptyCart}>Empty Cart</button>
                 </div>
             </div>
         </motion.div>
