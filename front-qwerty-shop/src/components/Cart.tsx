@@ -46,6 +46,10 @@ const Cart = (props: any) => {
                         ) : <div>Cart is empty!</div>
                     }
                 </div>
+                <div className='qwerty-shop-cart-buttons-container'>
+                    <NavLink to='/checkout'>Checkout</NavLink>
+                    <button>Empty Cart</button>
+                </div>
             </div>
         </motion.div>
     );

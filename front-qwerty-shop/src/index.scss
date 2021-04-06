@@ -1023,8 +1023,9 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
     .qwerty-shop-cart-items-container {
         display: flex;
+        flex: 1;
         flex-direction: column;
-        max-height: 65vh;
+        max-height: 60vh;
         overflow: auto;
         width: 100%;
     }
@@ -1055,6 +1056,21 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
         .qwerty-shop-cart-item-quantity {
             align-self: center;
+        }
+    }
+
+    .qwerty-shop-cart-buttons-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-top: 64px;
+        width: 35%;
+
+        * {
+            border: solid 2px #1C1C1D;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
         }
     }
 }
