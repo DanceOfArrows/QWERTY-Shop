@@ -63,7 +63,8 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                         size,
                         quantity,
                         image,
-                        name
+                        name,
+                        price
                     }
               }
             `,

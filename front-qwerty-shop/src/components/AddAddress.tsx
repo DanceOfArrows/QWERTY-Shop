@@ -57,7 +57,8 @@ const AddAddress = (props: any) => {
                             size,
                             quantity,
                             image,
-                            name
+                            name,
+                            price
                         }
                   }
                 `,

@@ -16,6 +16,7 @@ const {
   AddAddress,
   AuthRoutes,
   Cart,
+  Checkout,
   Footer,
   Home,
   Item,
@@ -49,7 +50,8 @@ export const GET_USER_INFO = gql`
             size,
             quantity,
             image,
-            name
+            name,
+            price
         },
         email,
     }
@@ -91,7 +93,8 @@ const App: React.FC<ApolloClientInterface> = (props) => {
               size,
               quantity,
               image,
-              name
+              name,
+              price
             }
         }
       `,
@@ -135,7 +138,8 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                     size,
                     quantity,
                     image,
-                    name
+                    name,
+                    price
                 }
           }
         `,
@@ -235,6 +239,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                 <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} />
                 <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/profile' component={Profile} setToken={setToken} token={token} />
                 <ProtectedRoute exact path='/cart' component={Cart} checkCachedUser={checkCachedUser} client={client} token={token} />
+                <ProtectedRoute exact path='/checkout' component={Checkout} checkCachedUser={checkCachedUser} client={client} token={token} />
               </Switch>
             </AnimatePresence>
           </div>

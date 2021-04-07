@@ -68,6 +68,10 @@ export class CartItem {
     @Field(() => String)
     @Prop({ required: true })
     image: string;
+
+    @Field(() => Number)
+    @Prop({ required: true })
+    price: number;
 };
 
 @ObjectType()

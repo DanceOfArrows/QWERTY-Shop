@@ -1,8 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { Schema as MongooseSchema } from 'mongoose';
 
-import { CartItem } from './user.model';
-
 @InputType()
 export class AddAddressInput {
     @Field()
@@ -44,6 +42,9 @@ class CartItemInput {
 
     @Field(() => String)
     image: string;
+
+    @Field(() => Number)
+    price: number;
 }
 
 @InputType()
@@ -83,7 +84,4 @@ export class CreateUserInput {
 
     @Field()
     password: string;
-
-    // @Field(() => [String], { nullable: true })
-    // cart?: string[];
 };

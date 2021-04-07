@@ -42,7 +42,8 @@ export const ADD_CART_TO_USER = gql`
             color,
             size,
             quantity,
-            name
+            name,
+            price
         },
     }
   }
@@ -61,6 +62,7 @@ const Item = (props: any) => {
 
     const [addCartToUser, cartLoading] = useMutation(ADD_CART_TO_USER, {
         update(_) {
+            removeAllToasts();
             addToast('Successfully added item to cart.', {
                 appearance: 'success',
                 autoDismiss: true,
@@ -136,6 +138,7 @@ const Item = (props: any) => {
                 quantity: currentQuantity,
                 image: CIPQS[currentColor]['image'],
                 name: item.name,
+                price: CIPQS[currentColor][currentSize].price
             });
         } else {
             cart.push({
@@ -145,6 +148,7 @@ const Item = (props: any) => {
                 quantity: currentQuantity,
                 image: CIPQS[currentColor]['image'],
                 name: item.name,
+                price: CIPQS[currentColor][currentSize].price
             });
         }
 
@@ -153,7 +157,6 @@ const Item = (props: any) => {
 
         /* Write data to user */
         if (existingUser && token) {
-            console.log(cart)
             addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
                 removeAllToasts();
                 addToast(e.message, {

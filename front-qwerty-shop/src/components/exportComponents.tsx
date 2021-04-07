@@ -1,6 +1,7 @@
 import AddAddress from './AddAddress';
 import * as AuthRoutes from './AuthCheck';
 import Cart from './Cart';
+import Checkout from './Checkout';
 import Footer from './Footer';
 import Home from './Home';
 import Item from './Item';
@@ -15,6 +16,7 @@ export {
     AddAddress,
     AuthRoutes,
     Cart,
+    Checkout,
     Footer,
     Home,
     Item,

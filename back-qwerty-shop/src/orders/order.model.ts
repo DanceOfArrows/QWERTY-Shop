@@ -1,8 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Field, ObjectType } from '@nestjs/graphql';
-import { Document, Types } from 'mongoose';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 
 import { Address } from '../users/user.model';
+import { CartInput } from '../users/user.inputs';
 
 @ObjectType()
 @Schema()
@@ -11,13 +12,13 @@ export class Order {
     @Prop({ required: true, unique: true })
     address: Address;
 
-    @Field(() => [Types.ObjectId])
+    @Field(() => CartInput)
     @Prop({ required: true })
-    items_id: [Types.ObjectId];
+    items: CartInput;
 
-    @Field(() => Types.ObjectId)
+    @Field(() => ID)
     @Prop({ required: true })
-    user_id: Types.ObjectId;
+    user_id: MongooseSchema.Types.ObjectId;
 
     @Field(() => Date)
     @Prop({ required: true })
