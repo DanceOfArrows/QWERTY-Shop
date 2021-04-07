@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { NavLink, withRouter } from 'react-router-dom';
@@ -10,8 +11,14 @@ import LoadingSpinner from './LoadingSpinner';
 const Checkout = (props: any) => {
     document.title = 'QWERTY Shop - Checkout';
     const { addToast, removeAllToasts } = useToasts();
+    const [currentAddressIdx, setAddressIdx] = useState(0);
     const userInfo = props.checkCachedUser();
-    const addresses = userInfo.addresses;
+    const addresses = userInfo.addresses.slice().sort((a: any, b: any) => {
+        const aVal = a.default ? 1 : -1;
+        const bVal = b.default ? 1 : -1;
+
+        return bVal - aVal;
+    });
     const cart = userInfo.cart;
     const loadingText = 'Checking out items!'.split('');
 
@@ -83,27 +90,48 @@ const Checkout = (props: any) => {
                                 ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
                             }
                         </div>
+                        <div className='qwerty-shop-checkout-addresses-title'>Address to ship to</div>
                         <div className='qwerty-shop-checkout-addresses-container'>
                             {
                                 addresses && addresses.length > 0 ? (
-                                    <>
+                                    <form>
                                         {
-                                            addresses.map((address: any) => (
-                                                <div key={`checkout address ${address.fullName}`}>
+                                            addresses.map((address: any, idx: number) => {
+                                                const {
+                                                    addressLineOne,
+                                                    city,
+                                                    fullName,
+                                                    state,
+                                                    zipCode,
+                                                } = address;
 
-                                                </div>
-                                            ))
+                                                return (
+                                                    <div className='qwerty-shop-checkout-item' key={`checkout address ${address.fullName}`}>
+                                                        <input
+                                                            type='radio'
+                                                            id={`address-${idx}`}
+                                                            name='address-idx'
+
+                                                            checked={currentAddressIdx === idx}
+                                                            onChange={() => setAddressIdx(idx)}
+                                                        />
+                                                        <label htmlFor={`address-${idx}`}>
+                                                            <span className='qwerty-shop-address-fullName'>{fullName}, </span> {addressLineOne}, {city}, {state} {zipCode}
+                                                        </label>
+                                                    </div>
+                                                )
+                                            })
                                         }
-                                    </>
+                                    </form>
                                 ) : (
                                     <div>Add an address to complete checkout!</div>
                                 )
                             }
                         </div>
-                        <div className='qwerty-shop-cart-total'>Total: ${totalPrice}</div>
+                        <div className='qwerty-shop-checkout-total'>Total: ${totalPrice}</div>
                         <div className='qwerty-shop-cart-buttons-container'>
                             {
-                                cart && cart.length > 0 ? (
+                                cart && cart.length > 0 && addresses && Object.keys(addresses[currentAddressIdx]).length > 0 ? (
                                     <div>Confirm Checkout</div>
                                 ) : <div className='qwerty-shop-cart-checkoutCrossed'>Confirm Checkout</div>
                             }
