@@ -281,7 +281,7 @@ const Item = (props: any) => {
                                         </div>
                                         <div className='qwerty-shop-item-section-container'>
                                             <div className='qwerty-shop-item-label'>Description: </div>
-                                            <div>{item.description}</div>
+                                            <div className='qwerty-shop-item-description'>{item.description}</div>
                                         </div>
                                         <div className='qwerty-shop-item-section-container qwerty-shop-item-quantity-container'>
                                             <input

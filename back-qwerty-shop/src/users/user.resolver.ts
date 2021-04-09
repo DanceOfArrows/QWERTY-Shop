@@ -40,8 +40,7 @@ export class UserResolver {
         @Context('user') user: UserNoPW,
         @Args('addAddressData') addAddressData: AddAddressInput,
     ) {
-        const newAddressData = { email: user.email, ...addAddressData }
-        return this.usersService.addAddress(newAddressData);
+        return this.usersService.addAddress(user.email, addAddressData);
     };
 
     @Mutation(() => UserNoPW)

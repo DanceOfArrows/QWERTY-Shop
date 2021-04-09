@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 import { UserDocument, UserNoPW } from './user.model';
-import { CartInput, CreateUserInput, NewAddressInput } from './user.inputs';
+import { AddAddressInput, CartInput, CreateUserInput } from './user.inputs';
 
 @Injectable()
 export class UsersService {
@@ -13,8 +13,7 @@ export class UsersService {
         private userModel: Model<UserDocument>,
     ) { }
 
-    async addAddress(newAddressInput: NewAddressInput): Promise<UserNoPW | undefined> {
-        const { email, ...addressInfo } = newAddressInput;
+    async addAddress(email: string, addressInfo: AddAddressInput): Promise<UserNoPW | undefined> {
         const user = await this.userModel.findOne({ email }).lean();
         let updatedAddresses = [...user.addresses];
 

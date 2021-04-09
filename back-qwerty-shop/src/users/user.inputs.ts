@@ -24,7 +24,7 @@ export class AddAddressInput {
 };
 
 @InputType()
-class CartItemInput {
+export class CartItemInput {
     @Field(() => ID)
     itemId: MongooseSchema.Types.ObjectId;
 
@@ -52,30 +52,6 @@ export class CartInput {
     @Field(() => [CartItemInput])
     items: CartItemInput[];
 }
-
-@InputType()
-export class NewAddressInput {
-    @Field()
-    email: string;
-    @Field()
-    country: string;
-    @Field()
-    fullName: string;
-    @Field()
-    phoneNumber: string;
-    @Field()
-    addressLineOne: string;
-    @Field()
-    addressLineTwo?: string;
-    @Field()
-    city: string;
-    @Field()
-    state: string;
-    @Field()
-    zipCode: string;
-    @Field()
-    default: boolean;
-};
 
 @InputType()
 export class CreateUserInput {

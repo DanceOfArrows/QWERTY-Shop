@@ -84,7 +84,7 @@ const Cart = (props: any) => {
                                 (
                                     cart.map((cartItem: any) => (
                                         <div className='qwerty-shop-cart-item' key={`cart ${cartItem.itemId} ${cartItem.color} ${cartItem.size}`}>
-                                            <div className='qwerty-shop-cart-item-image'>{cartItem.image}</div>
+                                            <img className='qwerty-shop-cart-item-image' src={cartItem.image} alt='item image' />
                                             <div className='qwerty-shop-cart-item-info-container'>
                                                 <NavLink to={`/item/${cartItem.itemId}`} className='qwerty-shop-cart-item-info-name'>{cartItem.name}</NavLink>
                                                 <div>Color: <span className='qwerty-shop-cart-item-info-color'>{cartItem.color}</span> </div>

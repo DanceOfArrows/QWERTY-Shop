@@ -758,6 +758,10 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
 .qwerty-shop-item-section-container {
     margin-top: 24px;
+
+    .qwerty-shop-item-description {
+        max-width: 75%;
+    }
 }
 
 .qwerty-shop-item-label {
@@ -1056,6 +1060,11 @@ $productDivs: 0, 1, 2, 3, 4, 5;
         grid-template: 128px / 128px 1fr 128px;
         margin: 24px 48px 24px 48px;
         width: calc(100% - 96px);
+
+        .qwerty-shop-cart-item-image {
+            max-height: 100%;
+            max-width: 100%;
+        }
 
         .qwerty-shop-cart-item-info-container {
             margin-left: 24px;

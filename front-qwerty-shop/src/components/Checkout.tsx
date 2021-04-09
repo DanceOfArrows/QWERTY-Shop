@@ -1,34 +1,63 @@
 import { useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { NavLink, withRouter } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications'
 
-import { ADD_CART_TO_USER } from './Item';
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
+
+export const CHECK_OUT = gql`
+  mutation checkoutOrder($CartInput: CartInput!, $AddAddressInput: AddAddressInput!) {
+    checkoutOrder(cart: $CartInput, address: $AddAddressInput) {
+        address {
+            country,
+            fullName,
+            phoneNumber,
+            addressLineOne,
+            addressLineTwo,
+            city,
+            state,
+            zipCode,
+            default
+        },
+        items {
+            itemId,
+            image,
+            color,
+            size,
+            quantity,
+            name,
+            price
+        },
+        saleDate,
+    }
+  }
+`;
 
 const Checkout = (props: any) => {
     document.title = 'QWERTY Shop - Checkout';
     const { addToast, removeAllToasts } = useToasts();
     const [currentAddressIdx, setAddressIdx] = useState(0);
     const userInfo = props.checkCachedUser();
-    const addresses = userInfo.addresses.slice().sort((a: any, b: any) => {
+    const addresses = JSON.parse(JSON.stringify(userInfo.addresses)).sort((a: any, b: any) => {
         const aVal = a.default ? 1 : -1;
         const bVal = b.default ? 1 : -1;
 
         return bVal - aVal;
     });
-    const cart = userInfo.cart;
+    const cart = JSON.parse(JSON.stringify(userInfo.cart));
     const loadingText = 'Checking out items!'.split('');
 
-    const [checkoutItems, { loading: checkoutLoading }] = useMutation(ADD_CART_TO_USER, {
+    const [checkoutItems, { loading: checkoutLoading }] = useMutation(CHECK_OUT, {
         update(_) {
             removeAllToasts();
             addToast('Order completed.', {
                 appearance: 'success',
                 autoDismiss: true,
             });
+
+            props.history.push('/profile');
         }
     });
 
@@ -38,6 +67,19 @@ const Checkout = (props: any) => {
             const { price, quantity } = item;
             totalPrice += (price * quantity);
         })
+    }
+
+    const handleCheckout = () => {
+        cart.forEach((cartItem: any) => delete cartItem.__typename);
+        delete addresses[currentAddressIdx].__typename;
+
+        checkoutItems({ variables: { CartInput: { items: cart }, AddAddressInput: addresses[currentAddressIdx] } }).catch(e => {
+            removeAllToasts();
+            addToast(e.message, {
+                appearance: 'error',
+                autoDismiss: true,
+            });
+        });
     }
 
     return (
@@ -74,7 +116,7 @@ const Checkout = (props: any) => {
                                 (
                                     cart.map((cartItem: any) => (
                                         <div className='qwerty-shop-cart-item' key={`checkout ${cartItem.itemId} ${cartItem.color} ${cartItem.size}`}>
-                                            <div className='qwerty-shop-cart-item-image'>{cartItem.image}</div>
+                                            <img className='qwerty-shop-cart-item-image' src={cartItem.image} alt='item image' />
                                             <div className='qwerty-shop-cart-item-info-container'>
                                                 <NavLink to={`/item/${cartItem.itemId}`} className='qwerty-shop-cart-item-info-name'>{cartItem.name}</NavLink>
                                                 <div>Color: <span className='qwerty-shop-cart-item-info-color'>{cartItem.color}</span> </div>
@@ -132,7 +174,7 @@ const Checkout = (props: any) => {
                         <div className='qwerty-shop-cart-buttons-container'>
                             {
                                 cart && cart.length > 0 && addresses && Object.keys(addresses[currentAddressIdx]).length > 0 ? (
-                                    <div>Confirm Checkout</div>
+                                    <div onClick={handleCheckout}>Confirm Checkout</div>
                                 ) : <div className='qwerty-shop-cart-checkoutCrossed'>Confirm Checkout</div>
                             }
 

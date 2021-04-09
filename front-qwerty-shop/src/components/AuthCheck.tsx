@@ -21,6 +21,14 @@ export const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
     const client = props.client ? props.client : null;
     const existingUser = checkCachedUser();
     const localToken = localStorage.getItem('token');
+    const [getUserInfo] = useLazyQuery(GET_USER_INFO, {
+        fetchPolicy: 'network-only',
+        nextFetchPolicy: 'network-only'
+    });
+
+    useEffect(() => {
+        getUserInfo();
+    }, [token])
 
     if (!localToken && token != '') setToken('');
     if (error === 'Invalid token' || error === 'Forbidden resource') return (
@@ -32,7 +40,7 @@ export const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
             path={path}
             exact={exact}
             render={(reactProps) =>
-                existingUser && Object.keys(existingUser).length > 0 && token && localToken ?
+                existingUser && Object.keys(existingUser).length > 0 && localToken ?
                     <Component {...reactProps} checkCachedUser={checkCachedUser} client={client} error={error} setError={setError} /> :
                     <Redirect to='/login' />
             }

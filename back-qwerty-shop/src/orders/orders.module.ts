@@ -1,7 +1,9 @@
 
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ItemResolver } from '../items/item.resolver';
 import { ItemSchema } from '../items/item.model';
+import { ItemsService } from '../items/items.service';
 import { OrderResolver } from './orders.resolver';
 import { OrdersService } from './orders.service';
 import { OrderSchema } from './order.model';
@@ -15,7 +17,7 @@ import { UsersService } from '../users/users.service';
     MongooseModule.forFeature([{ name: 'Order', schema: OrderSchema }]),
     MongooseModule.forFeature([{ name: 'Item', schema: ItemSchema }])
   ],
-  providers: [OrderResolver, OrdersService, UserResolver, UsersService],
+  providers: [ItemResolver, ItemsService, OrderResolver, OrdersService, UserResolver, UsersService],
   exports: [OrdersService],
 })
 export class OrdersModule { }

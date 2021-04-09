@@ -151,47 +151,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       }
     });
     localStorage.removeItem('token');
-    // console.log(error);
   }
-
-  // const existingUser = checkCachedUser();
-  // if (!existingUser || existingUser._id === null) {
-  //   client.writeFragment({
-  //     id: 'userInfo',
-  //     fragment:
-  //       gql`
-  //         fragment UserInfo on UserNoPW {
-  //             _id,
-  //             addresses {
-  //                 country,
-  //                 fullName,
-  //                 phoneNumber,
-  //                 addressLineOne,
-  //                 addressLineTwo,
-  //                 city,
-  //                 state,
-  //                 zipCode,
-  //                 default
-  //             },
-  //             email,
-  //             cart {
-  //               itemId,
-  //               addresses,
-  //               size
-  //               quantity,
-  //               image
-  //             },
-  //       }
-  //     `,
-  //     data: {
-  //       _id: null,
-  //       addresses: [],
-  //       email: null,
-  //       cart: [],
-  //     }
-  //   });
-  // }
-
 
   return (
     <>
@@ -239,7 +199,14 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                 <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} />
                 <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/profile' component={Profile} setToken={setToken} token={token} />
                 <ProtectedRoute exact path='/cart' component={Cart} checkCachedUser={checkCachedUser} client={client} token={token} />
-                <ProtectedRoute exact path='/checkout' component={Checkout} checkCachedUser={checkCachedUser} client={client} token={token} />
+                <ProtectedRoute
+                  exact
+                  path='/checkout'
+                  component={Checkout}
+                  checkCachedUser={checkCachedUser}
+                  client={client}
+                  token={token}
+                />
               </Switch>
             </AnimatePresence>
           </div>
