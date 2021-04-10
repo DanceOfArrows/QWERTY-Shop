@@ -54,7 +54,90 @@ const Profile = (props: any) => {
                 return (
                     <>
                         <div className='qwerty-shop-profile-label-left'>Orders</div>
-                        <div className='qwerty-shop-profile-orders-container'></div>
+                        <div className='qwerty-shop-profile-orders-container'>
+                            {
+                                orders && orders.length > 0 ? (
+                                    orders.map((order: any, idx: number) => {
+                                        const { address, items, saleDate } = order;
+                                        const {
+                                            addressLineOne,
+                                            addressLineTwo,
+                                            city,
+                                            country,
+                                            fullName,
+                                            phoneNumber,
+                                            state,
+                                            zipCode,
+                                        } = address;
+
+                                        const months = [
+                                            'January',
+                                            'February',
+                                            'March',
+                                            'April',
+                                            'May',
+                                            'June',
+                                            'July',
+                                            'August',
+                                            'September',
+                                            'October',
+                                            'November',
+                                            'December'
+                                        ];
+
+                                        const dateConverted = new Date(Date.parse(saleDate));
+                                        const month = months[dateConverted.getMonth()];
+                                        const date = dateConverted.getDate();
+                                        const year = dateConverted.getFullYear();
+
+                                        return (
+                                            <div className='qwerty-shop-profile-order-item' style={idx != 0 ? { marginTop: '48px' } : {}}>
+                                                <div className='qwerty-shop-profile-order-text'>
+                                                    <div>
+                                                        <div style={{ fontWeight: 'bold' }}>Order Placed:</div>
+                                                        <div>{month}, {date} {year}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div style={{ fontWeight: 'bold' }}>Ship To:</div>
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            flexDirection: 'row',
+                                                            alignItems: 'flex-end',
+                                                        }}>
+                                                            <div className='qwerty-shop-profile-order-address-name'>{fullName}</div>
+                                                            <div className="fas fa-angle-down" style={{ marginLeft: '6px' }} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='qwerty-shop-cart-items-container'>
+                                                    {items && items.length > 0 ?
+                                                        (
+                                                            items.map((cartItem: any, itemIdx: number) => (
+                                                                <div
+                                                                    className='qwerty-shop-cart-item'
+                                                                    key={`Order-${idx}-item-${itemIdx}`}
+                                                                >
+                                                                    <img className='qwerty-shop-cart-item-image' src={cartItem.image} alt='item image' />
+                                                                    <div className='qwerty-shop-cart-item-info-container'>
+                                                                        <NavLink to={`/item/${cartItem.itemId}`} className='qwerty-shop-cart-item-info-name'>{cartItem.name}</NavLink>
+                                                                        <div>Color: <span className='qwerty-shop-cart-item-info-color'>{cartItem.color}</span> </div>
+                                                                        <div>Size: <span className='qwerty-shop-cart-item-info-size'>{cartItem.size}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <div className='qwerty-shop-cart-item-price'>Price per: ${cartItem.price}</div>
+                                                                        <div className='qwerty-shop-cart-item-quantity'>Qty: {cartItem.quantity}</div>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                ) : null}
+                        </div>
                     </>
                 )
                     ;

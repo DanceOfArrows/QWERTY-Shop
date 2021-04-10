@@ -196,7 +196,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                   exact path='/item/:itemId'
                   render={(reactProps) => <Item {...reactProps} checkCachedUser={checkCachedUser} client={client} />} />
                 <AuthRoute checkCachedUser={checkCachedUser} exact path='/login' component={Login} setToken={setToken} token={token} />
-                <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} />
+                <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} setToken={setToken} token={token} />
                 <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/profile' component={Profile} setToken={setToken} token={token} />
                 <ProtectedRoute exact path='/cart' component={Cart} checkCachedUser={checkCachedUser} client={client} token={token} />
                 <ProtectedRoute
