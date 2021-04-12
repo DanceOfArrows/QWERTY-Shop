@@ -1161,6 +1161,10 @@ $productDivs: 0, 1, 2, 3, 4, 5;
     padding: 12px 24px 12px 24px;
 }
 
+.qwerty-shop-order-address-wrapper {
+    position: relative;
+}
+
 .qwerty-shop-profile-order-address-name {
     background-clip: text;
     background-color: #FFFFFF;
@@ -1183,13 +1187,35 @@ $productDivs: 0, 1, 2, 3, 4, 5;
         background-size: 100%;
     }
 
-    &:hover:after {
+    &:after {
         content: "";
         position: absolute;
         bottom: -2px;
         left: 0;
         height: 1px;
         width: 100%;
+        background: red;
         background-image: linear-gradient(to right, #21BFFE, #880383);
+        opacity: 0;
+        transition: opacity 300ms ease;
     }
+    
+    &:after:hover {
+        opacity: 1;
+    }
+}
+
+.qwerty-shop-profile-order-address {
+    background-color: black;
+    background-image: linear-gradient(black, black), radial-gradient(circle at top left, #21BFFE, #880383);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border: solid 1px transparent;
+    border-radius: 12px;
+    padding: 12px;
+    position: absolute;
+    top: 30px;
+    left: -60px;
+    transition: opacity 300ms ease;
+    width: 160px;
 }

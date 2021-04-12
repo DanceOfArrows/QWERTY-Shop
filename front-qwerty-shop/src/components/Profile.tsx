@@ -39,7 +39,8 @@ const Profile = (props: any) => {
     const tabToSet = props.location.state ? props.location.state.tab : null;
     const userInfo = props.checkCachedUser();
     const addressesCopy = userInfo.addresses.slice();
-    const [currentProfileTab, setCurrentProfileTab] = useState(tabToSet ? tabToSet : 'orders')
+    const [currentProfileTab, setCurrentProfileTab] = useState(tabToSet ? tabToSet : 'orders');
+    const [displayAddressIdx, setDisplayAddressIdx] = useState<null | number>(null);
 
     const { loading, error, data } = useQuery(GET_USER_ORDERS, {
         fetchPolicy: "network-only"
@@ -91,7 +92,7 @@ const Profile = (props: any) => {
                                         const year = dateConverted.getFullYear();
 
                                         return (
-                                            <div className='qwerty-shop-profile-order-item' style={idx != 0 ? { marginTop: '48px' } : {}}>
+                                            <div key={`qwerty-shop-profile-order-${idx}`} className='qwerty-shop-profile-order-item' style={idx != 0 ? { marginTop: '48px' } : {}}>
                                                 <div className='qwerty-shop-profile-order-text'>
                                                     <div>
                                                         <div style={{ fontWeight: 'bold' }}>Order Placed:</div>
@@ -99,12 +100,29 @@ const Profile = (props: any) => {
                                                     </div>
                                                     <div>
                                                         <div style={{ fontWeight: 'bold' }}>Ship To:</div>
-                                                        <div style={{
-                                                            display: 'flex',
-                                                            flexDirection: 'row',
-                                                            alignItems: 'flex-end',
-                                                        }}>
-                                                            <div className='qwerty-shop-profile-order-address-name'>{fullName}</div>
+                                                        <div
+                                                            className='qwerty-shop-order-address-wrapper'
+                                                            style={{
+                                                                display: 'flex',
+                                                                flexDirection: 'row',
+                                                                alignItems: 'flex-end',
+                                                            }}>
+                                                            <div
+                                                                className='qwerty-shop-profile-order-address-name'
+                                                                onMouseOver={() => setDisplayAddressIdx(idx)}
+                                                                onMouseLeave={() => setDisplayAddressIdx(null)}
+                                                            >{fullName}</div>
+                                                            <div
+                                                                className='qwerty-shop-profile-order-address'
+                                                                style={displayAddressIdx != idx ? { opacity: 0 } : { opacity: 1 }}
+                                                            >
+                                                                <div className='qwerty-shop-address-fullName'>{fullName}</div>
+                                                                <div>{addressLineOne}</div>
+                                                                {addressLineTwo.length > 0 ? <div>{addressLineTwo}</div> : null}
+                                                                <div>{city}, {state} {zipCode}</div>
+                                                                <div>{country}</div>
+                                                                <div>Phone Number: {phoneNumber}</div>
+                                                            </div>
                                                             <div className="fas fa-angle-down" style={{ marginLeft: '6px' }} />
                                                         </div>
                                                     </div>

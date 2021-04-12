@@ -67,7 +67,6 @@ export class OrdersService {
 
         if (user && user._id) {
             const orders = await this.orderModel.find({ user_id: user._id }).lean();
-            console.log(orders);
             return orders;
         } else {
             throw new Error(`A user with the email '${email}' was not found.`);
