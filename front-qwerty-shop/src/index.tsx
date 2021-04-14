@@ -15,7 +15,7 @@ const getToken = () => {
 };
 
 const setupApollo = async () => {
-  const apiBaseUrl = process.env.NODE_ENV === "production" ? '' : 'http://localhost:8080';
+  const apiBaseUrl = process.env.NODE_ENV === "production" ? 'https://qwerty-shop-back.herokuapp.com' : 'http://localhost:8080';
   const cache = new InMemoryCache({
     addTypename: true,
     typePolicies: {
