@@ -669,6 +669,37 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 }
 
 /* Item Style */
+.qwerty-shop-item-page {
+    height: 100%;
+
+    .qwerty-shop-item-info-left {
+        height: 100%;
+        width: 700px;
+    
+        .qwerty-shop-item-image-container {
+            height: 50%;
+            position: relative;
+        
+            .qwerty-shop-item-image-main {
+                height: 400px;
+                margin-left: 80px;
+                position: absolute;
+                width: 540px;
+            }
+        }
+        
+        .qwerty-shop-item-image-list {
+            margin-left: 80px;
+        
+            img {
+                margin-right: 24px;
+                height: 128px;
+                width: 128px;
+            }
+        }
+    }
+}
+
 .qwerty-shop-item-back-btn {
     display: inline-block;
     margin: 12px;
@@ -678,6 +709,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 .qwerty-shop-item-info-container {
     display: grid;
     grid-template: 1fr / 1fr 1fr;
+    min-height: 100%;
 
     .qwerty-shop-item-info-right {
         color: white;

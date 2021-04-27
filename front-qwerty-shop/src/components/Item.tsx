@@ -74,6 +74,7 @@ const Item = (props: any) => {
     const item = data && data.findItemById ? data.findItemById.item : null;
     let CIPQS: any = {};
     let sizes: any = [];
+    let images: any = [item.displayImage];
 
     if (item) {
         item.CIPQS.forEach((itemColor: any) => {
@@ -84,6 +85,8 @@ const Item = (props: any) => {
 
                 CIPQS[itemColor.color][size] = { price, quantity };
                 CIPQS[itemColor.color]['image'] = itemColor.image;
+                images.push(itemColor.image);
+
                 if (!sizes.includes(size)) sizes.push(size);
             };
         });
@@ -94,6 +97,7 @@ const Item = (props: any) => {
     const [currentColor, setCurrentColor] = useState(colors[0]);
     const [currentSize, setCurrentSize] = useState(sizes[0]);
     const [currentQuantity, setCurrentQuantity] = useState(1);
+    const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
     if (colors.length > 0 && !currentColor) setCurrentColor(colors[0]);
     if (sizes.length > 0 && !currentSize) setCurrentSize(sizes[0]);
@@ -218,7 +222,36 @@ const Item = (props: any) => {
                             <div className='qwerty-shop-item-page'>
                                 <NavLink to={`/products/${data.findItemById.type}`} className='qwerty-shop-item-back-btn'>{'<'} Back to {categoryName}</NavLink>
                                 <div className='qwerty-shop-item-info-container'>
-                                    <div className='qwerty-shop-item-info-left'></div>
+                                    <div className='qwerty-shop-item-info-left'>
+                                        <div className='qwerty-shop-item-image-container'>
+                                            {
+                                                images.map((image: string, idx: number) => (
+                                                    <img
+                                                        className='qwerty-shop-item-image-main'
+                                                        src={image}
+                                                        alt='Main Display Image'
+                                                        style={idx === currentImageIdx ? { opacity: 1 } : { opacity: 0 }}
+                                                    />
+                                                ))
+                                            }
+                                        </div>
+                                        <div className='qwerty-shop-item-image-list'>
+                                            {
+                                                images.map((image: string, idx: number) => (
+                                                    <img
+                                                        className={
+                                                            idx === currentImageIdx ?
+                                                                'qwerty-shop-item-image-sub-active' :
+                                                                'qwerty-shop-item-image-sub'
+
+                                                        }
+                                                        src={image}
+                                                        alt='Main Display Image'
+                                                    />
+                                                ))
+                                            }
+                                        </div>
+                                    </div>
                                     <div className='qwerty-shop-item-info-right'>
                                         <div className='qwerty-shop-item-name'>{item.name}</div>
                                         <div className='qwerty-shop-item-price'>${CIPQS[currentColor][currentSize].price}</div>

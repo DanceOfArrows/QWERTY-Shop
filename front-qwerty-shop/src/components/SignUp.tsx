@@ -18,9 +18,8 @@ const SignUp = (props: any) => {
     let [error, setError] = React.useState('');
     const submitSignUp = (signUpInfo: any) => {
         const { email, password, passwordConfirm } = signUpInfo;
-        const cart: any = [];
         if (password != passwordConfirm) setError('Passwords do not match.')
-        else signup({ variables: { CreateUserInput: { email, password, cart } } }).catch(e => setError(e.message));
+        else signup({ variables: { CreateUserInput: { email, password } } }).catch(e => setError(e.message));
     };
 
     const [signup, loading] = useMutation(SIGN_UP, {
@@ -53,7 +52,10 @@ const SignUp = (props: any) => {
 
                     {
                         loading && loading.called && loading.loading || testLoading ? (
-                            <LoadingSpinner />
+                            <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                <LoadingSpinner />
+                            </div>
+
                         ) : (
                             <div className='qwerty-shop-form-button-container'>
                                 <div className='qwerty-shop-form-button'>
