@@ -669,60 +669,61 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 }
 
 /* Item Style */
-.qwerty-shop-item-page {
-    height: 100%;
-
-    .qwerty-shop-item-info-left {
-        height: 100%;
-        width: 100%;
-    
-        .qwerty-shop-item-image-container {
-            height: 50%;
-            margin-left: 20%;
-            position: relative;
-        
-            .qwerty-shop-item-image-main {
-                max-height: 400px;
-                position: absolute;
-                max-width: 80%;
-            }
-        }
-        
-        .qwerty-shop-item-image-list {
-            margin-left: 20%;
-            max-height: 300px;
-            max-width: 540px;
-            overflow: auto;
-        
-            img {
-                margin: 0 24px 24px 0;
-                height: 128px;
-                width: 128px;
-            }
-            
-            .qwerty-shop-item-image-sub-active {
-                border: solid 2px transparent;
-                border-image-slice: 1;
-                border-image-source: linear-gradient(to right, #880383, #21BFFE);
-            }
-        }
-    }
-}
-
 .qwerty-shop-item-back-btn {
     display: inline-block;
+    height: 24px;
     margin: 12px;
     position: relative;
 }
 
-.qwerty-shop-item-info-container {
-    display: grid;
-    grid-template: 1fr / 1fr 1fr;
-    margin-top: 24px;
-    min-height: calc(100% - 24px);
+.qwerty-shop-item-page {
+    height: 100%;
 
-    .qwerty-shop-item-info-right {
-        color: white;
+    .qwerty-shop-item-info-container {
+        display: grid;
+        grid-template: 1fr / 1fr 1fr;
+        margin-top: 24px;
+        height: calc(100% - 72px);
+    
+        .qwerty-shop-item-info-right {
+            color: white;
+        }
+
+        .qwerty-shop-item-info-left {
+            height: 100%;
+            width: 100%;
+        
+            .qwerty-shop-item-image-container {
+                height: 50%;
+                margin-left: 20%;
+                position: relative;
+            
+                .qwerty-shop-item-image-main {
+                    max-height: 400px;
+                    position: absolute;
+                    max-width: 80%;
+                }
+            }
+            
+            .qwerty-shop-item-image-list {
+                margin-left: 20%;
+                max-height: 300px;
+                max-width: 540px;
+                overflow: auto;
+            
+                img {
+                    margin: 0 24px 24px 0;
+                    height: 128px;
+                    width: 128px;
+                }
+                
+                .qwerty-shop-item-image-sub-active {
+                    border: solid 2px transparent;
+                    border-image-slice: 1;
+                    border-image-source: linear-gradient(to right, #880383, #21BFFE);
+                }
+            }
+        }
     }
 }
 
