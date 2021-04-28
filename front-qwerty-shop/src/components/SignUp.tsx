@@ -2,6 +2,7 @@ import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
+import { useToasts } from 'react-toast-notifications'
 
 import LoadingSpinner from './LoadingSpinner';
 
@@ -15,16 +16,25 @@ const SignUp = (props: any) => {
     document.title = 'QWERTY Shop - Sign Up';
     let testLoading = false;
     const { register, handleSubmit } = useForm();
-    let [error, setError] = React.useState('');
+    const { addToast, removeAllToasts } = useToasts();
+
     const submitSignUp = (signUpInfo: any) => {
+        removeAllToasts();
+
         const { email, password, passwordConfirm } = signUpInfo;
-        if (password != passwordConfirm) setError('Passwords do not match.')
-        else signup({ variables: { CreateUserInput: { email, password } } }).catch(e => setError(e.message));
+        if (password != passwordConfirm) addToast('Passwords do not match', {
+            appearance: 'error',
+            autoDismiss: true,
+        });
+        else signup({ variables: { CreateUserInput: { email, password } } }).catch(e => addToast(e.message, {
+            appearance: 'error',
+            autoDismiss: true,
+        }));
     };
 
     const [signup, loading] = useMutation(SIGN_UP, {
         update() {
-            setError('');
+            removeAllToasts();
             props.history.push('/');
         },
     });
@@ -36,9 +46,7 @@ const SignUp = (props: any) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <div className='qwerty-shop-sign-up'
-                style={error.length > 0 ? { height: '470px', transform: 'translate(-15rem, calc(-235px))' } : {}}
-            >
+            <div className='qwerty-shop-sign-up'>
                 <h1>Sign Up</h1>
                 <form onSubmit={handleSubmit(submitSignUp)}>
                     <label htmlFor='qwerty-shop-sign-up-email'>Email</label>
@@ -65,12 +73,6 @@ const SignUp = (props: any) => {
                         )
                     }
                 </form>
-
-                {
-                    error.length > 0 ?
-                        <p className='qwerty-shop-sign-up-error' style={{ color: 'red' }}>{error}</p>
-                        : null
-                }
             </div>
         </motion.div>
     );
