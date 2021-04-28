@@ -231,6 +231,7 @@ const Item = (props: any) => {
                                                         src={image}
                                                         alt='Main Display Image'
                                                         style={idx === currentImageIdx ? { opacity: 1 } : { opacity: 0 }}
+                                                        key={`main-image-${image}`}
                                                     />
                                                 ))
                                             }
@@ -247,6 +248,11 @@ const Item = (props: any) => {
                                                         }
                                                         src={image}
                                                         alt='Main Display Image'
+                                                        onClick={() => {
+                                                            console.log(idx);
+                                                            setCurrentImageIdx(idx)
+                                                        }}
+                                                        key={`sub-image-${image}`}
                                                     />
                                                 ))
                                             }
@@ -266,7 +272,14 @@ const Item = (props: any) => {
                                                             <div
                                                                 className={`qwerty-shop-item-variation-btn ${selectedClass}`}
                                                                 key={`qwerty-shop-${item.name}-${color}`}
-                                                                onClick={() => setCurrentColor(color)}
+                                                                onClick={
+                                                                    () => {
+                                                                        setCurrentColor(color);
+                                                                        for (let i = 0; i < images.length; i++) {
+                                                                            if (images[i] === CIPQS[color]['image']) setCurrentImageIdx(i);
+                                                                        }
+                                                                    }
+                                                                }
                                                             >
                                                                 {color}
                                                             </div>
