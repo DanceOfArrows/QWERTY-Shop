@@ -148,7 +148,7 @@ const Profile = (props: any) => {
                                                                     </div>
                                                                 </div>
                                                             ))
-                                                        ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
+                                                        ) : <div style={{ textAlign: 'center' }}>Failed to load items</div>
                                                     }
                                                 </div>
                                             </div>
