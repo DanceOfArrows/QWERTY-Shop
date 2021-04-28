@@ -23,7 +23,8 @@ The frontend is the interface that users interact with.  It makes requests to th
 
 The backend is in charge of the logic that occurs behind the scenes.  This includes making [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) opertaions to the database and handling any data that the user does not need to see.  
 
-Here is a flowchart for referrence:
+#### Here is a flowchart for referrence:  
+\
 ![Here is a flowchart for referrence:](/readme-assets/qwerty-shop-structure.png)
 
 # Technologies Used  
