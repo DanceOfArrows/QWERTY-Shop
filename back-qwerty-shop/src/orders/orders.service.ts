@@ -23,32 +23,75 @@ export class OrdersService {
     async checkoutOrder(email: string, cart: CartInput, address: AddAddressInput): Promise<Order | undefined> {
         const { items } = cart;
 
+        let itemsById = {};
+
+        /* Add items with the same id to an array inside itemsById */
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
             const { itemId, color, size, quantity } = item;
+            const itemIdStr = itemId.toString();
 
-            await this.itemModel.findById(itemId, (err, item) => {
-                if (err) throw new Error(`An error occurred while finding an item with id ${itemId}`);
+            if (itemsById[itemIdStr]) itemsById[itemIdStr].push({ color, size, quantity });
+            else itemsById[itemIdStr] = [itemId, { color, size, quantity }];
+        };
 
-                let CIPQS = item.CIPQS;
+        /* Update each itemId */
+        Object.keys(itemsById).forEach(async (itemIdStr) => {
+            const itemId = itemsById[itemIdStr][0];
+
+            let itemToUpdate = await this.itemModel.findById(itemId);
+
+            /* Update quantity of each variation in an item */
+            for (let i = 1; i < itemsById[itemIdStr].length; i++) {
+                const { color, size, quantity } = itemsById[itemIdStr][i];
+
+                let CIPQS = itemToUpdate.CIPQS;
                 for (let i = 0; i < CIPQS.length; i++) {
                     const currentColor = CIPQS[i].color;
                     if (currentColor === color) {
                         let variants = CIPQS[i].variants;
                         for (let j = 0; j < variants.length; j++) {
-                            const currentSize = variants[i].size;
+                            const currentSize = variants[j].size;
                             if (currentSize === size) {
-                                if (item.CIPQS[i].variants[j].quantity >= quantity) {
-                                    item.CIPQS[i].variants[j].quantity -= quantity;
-                                    item.markModified('CIPQS');
-                                    item.save();
+                                if (itemToUpdate.CIPQS[i].variants[j].quantity >= quantity) {
+                                    itemToUpdate.CIPQS[i].variants[j].quantity -= quantity;
                                 };
                             };
                         };
                     };
                 };
-            });
-        };
+            };
+
+            itemToUpdate.markModified('CIPQS');
+            itemToUpdate.save();
+        });
+
+        // for (let i = 0; i < items.length; i++) {
+        //     const item = items[i];
+        //     const { itemId, color, size, quantity } = item;
+
+        //     await this.itemModel.findById(itemId, (err, item) => {
+        //         if (err) throw new Error(`An error occurred while finding an item with id ${itemId}`);
+
+        //         let CIPQS = item.CIPQS;
+        //         for (let i = 0; i < CIPQS.length; i++) {
+        //             const currentColor = CIPQS[i].color;
+        //             if (currentColor === color) {
+        //                 let variants = CIPQS[i].variants;
+        //                 for (let j = 0; j < variants.length; j++) {
+        //                     const currentSize = variants[j].size;
+        //                     if (currentSize === size) {
+        //                         if (item.CIPQS[i].variants[j].quantity >= quantity) {
+        //                             item.CIPQS[i].variants[j].quantity -= quantity;
+        //                             item.markModified('CIPQS');
+        //                             item.save();
+        //                         };
+        //                     };
+        //                 };
+        //             };
+        //         };
+        //     });
+        // };
 
         const updateUserCart = await this.userModel.findOneAndUpdate({ email }, { $set: { cart: [] } }).lean();
 

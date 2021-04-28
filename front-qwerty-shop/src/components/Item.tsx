@@ -249,7 +249,6 @@ const Item = (props: any) => {
                                                         src={image}
                                                         alt='Main Display Image'
                                                         onClick={() => {
-                                                            console.log(idx);
                                                             setCurrentImageIdx(idx)
                                                         }}
                                                         key={`sub-image-${image}`}
@@ -278,6 +277,7 @@ const Item = (props: any) => {
                                                                         for (let i = 0; i < images.length; i++) {
                                                                             if (images[i] === CIPQS[color]['image']) setCurrentImageIdx(i);
                                                                         }
+                                                                        setCurrentQuantity(1);
                                                                     }
                                                                 }
                                                             >
@@ -307,7 +307,10 @@ const Item = (props: any) => {
                                                             <div
                                                                 className={`qwerty-shop-item-variation-btn ${selectedClass}`}
                                                                 key={`qwerty-shop-${item.name}-${size}`}
-                                                                onClick={() => setCurrentSize(size)}
+                                                                onClick={() => {
+                                                                    setCurrentSize(size)
+                                                                    setCurrentQuantity(1);
+                                                                }}
                                                             >
                                                                 {size}
                                                             </div>
