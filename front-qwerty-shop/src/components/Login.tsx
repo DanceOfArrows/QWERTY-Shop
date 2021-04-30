@@ -6,8 +6,8 @@ import { useToasts } from 'react-toast-notifications'
 import LoadingSpinner from './LoadingSpinner';
 
 const LOG_IN = gql`
-  mutation signIn($SignInInput: SignInInput!) {
-    signIn(signInData: $SignInInput) {
+  mutation login($LoginInput: LoginInput!) {
+    login(loginData: $LoginInput) {
         token
     }
   }
@@ -22,14 +22,14 @@ const Login = (props: any) => {
 
     const [login, loading] = useMutation(LOG_IN, {
         update(_, data) {
-            localStorage.setItem('token', data.data.signIn.token);
-            setToken(data.data.signIn.token)
+            localStorage.setItem('token', data.data.login.token);
+            setToken(data.data.login.token);
         },
     });
 
     const submitLogin = (loginInfo: Object) => {
         removeAllToasts();
-        login({ variables: { SignInInput: loginInfo } }).catch(e => {
+        login({ variables: { LoginInput: loginInfo } }).catch(e => {
             addToast(e.message, {
                 appearance: 'error',
                 autoDismiss: true,
@@ -81,7 +81,7 @@ const Login = (props: any) => {
                                             removeAllToasts();
                                             login({
                                                 variables: {
-                                                    SignInInput: {
+                                                    LoginInput: {
                                                         email: 'demo@user.com',
                                                         password: 'demouser123'
                                                     }

@@ -43,36 +43,14 @@ const NavBar: React.FC<NavBar> = (props: any) => {
             id: 'userInfo',
             fragment:
                 gql`
-                fragment UserInfo on UserNoPW {
-                    _id,
-                    addresses {
-                        country,
-                        fullName,
-                        phoneNumber,
-                        addressLineOne,
-                        addressLineTwo,
-                        city,
-                        state,
-                        zipCode,
-                        default
-                    },
+                fragment UserInfo on User {
+                    id,
                     email,
-                    cart {
-                        itemId,
-                        color,
-                        size,
-                        quantity,
-                        image,
-                        name,
-                        price
-                    }
               }
             `,
             data: {
-                _id: null,
-                addresses: [],
+                id: null,
                 email: null,
-                cart: [],
             }
         });
         localStorage.removeItem('token');
@@ -84,7 +62,7 @@ const NavBar: React.FC<NavBar> = (props: any) => {
 
         if (document.location.pathname === '/') document.addEventListener("scroll", handleScroll);
 
-        if (isCachedUser && isCachedUser._id && token) setLoggedIn(true);
+        if (isCachedUser && isCachedUser.id && token) setLoggedIn(true);
         else setLoggedIn(false);
 
         return () => {
@@ -136,7 +114,7 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                                                             { borderRadius: '12px 12px 0 0', borderTop: 'solid 2px #1C1C1D' } :
                                                             undefined
                                                     }>
-                                                        <NavLink to={`/products/${productType}`}>{productsDropdown[productType]}</NavLink>
+                                                        <NavLink to={`/products/${productsDropdown[productType]}`}>{productsDropdown[productType]}</NavLink>
                                                     </div>
                                                 )
                                             } else if (idx === Object.keys(productsDropdown).length - 1) {
@@ -149,13 +127,13 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                                                             borderRadius: '0 0 12px 12px',
                                                             borderBottom: 'solid 2px #1C1A23',
                                                         }}>
-                                                        <NavLink to={`/products/${productType}`}>{productsDropdown[productType]}</NavLink>
+                                                        <NavLink to={`/products/${productsDropdown[productType]}`}>{productsDropdown[productType]}</NavLink>
                                                     </div>
                                                 )
                                             } else {
                                                 return (
                                                     <div className={`qwerty-shop-navbar-products-dropdown-option-${idx}`} key={`dropdown-${productType}`}>
-                                                        <NavLink to={`/products/${productType}`}>{productsDropdown[productType]}</NavLink>
+                                                        <NavLink to={`/products/${productsDropdown[productType]}`}>{productsDropdown[productType]}</NavLink>
                                                     </div>
                                                 )
                                             }

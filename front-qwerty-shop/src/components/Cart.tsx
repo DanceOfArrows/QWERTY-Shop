@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications'
 
-import { ADD_CART_TO_USER } from './Item';
+import { ADD_ITEM_TO_CART } from './Item';
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -14,7 +14,7 @@ const Cart = (props: any) => {
     const cart = userInfo.cart;
     const loadingText = 'Emptying cart!'.split('');
 
-    const [addCartToUser, { loading: cartLoading }] = useMutation(ADD_CART_TO_USER, {
+    const [addItemToCart, { loading: cartLoading }] = useMutation(ADD_ITEM_TO_CART, {
         update(_) {
             removeAllToasts();
             addToast('Successfully emptied cart.', {
@@ -41,7 +41,7 @@ const Cart = (props: any) => {
             });
             return;
         }
-        addCartToUser({ variables: { CartInput: { items: [] } } }).catch(e => {
+        addItemToCart({ variables: { CartInput: { items: [] } } }).catch(e => {
             removeAllToasts();
             addToast(e.message, {
                 appearance: 'error',

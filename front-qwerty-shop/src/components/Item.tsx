@@ -10,42 +10,31 @@ import { useToasts } from 'react-toast-notifications'
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
-const FIND_ITEMS_BY_NAME = gql`
-  query findItemById($itemId: String!) {
-    findItemById(itemId: $itemId) {
+const FIND_ITEMS_BY_ID = gql`
+  query getItemById($itemId: Float!) {
+    getItemById(itemId: $itemId) {
         item {
-            CIPQS {
-                color,
-                image,
-                variants {
-                    price,
-                    quantity,
-                    size
-                }
-            },
-            description,
-            displayImage,
+            id,
             name,
-            _id,
+            image,
+            description,
+            type
         },
-        type
+        variations {
+            id,
+            option,
+            variant,
+            quantity,
+            price,
+            image,
+        }
     }
   }
 `;
 
-export const ADD_CART_TO_USER = gql`
-  mutation addCartToUser($CartInput: CartInput!) {
-    addCartToUser(cart: $CartInput) {
-        cart {
-            itemId,
-            image,
-            color,
-            size,
-            quantity,
-            name,
-            price
-        },
-    }
+export const ADD_ITEM_TO_CART = gql`
+  mutation addToCart($itemInfo: AddItemToCartInput!) {
+    addToCart(itemInfo: $itemInfo)
   }
 `;
 
@@ -53,14 +42,15 @@ const Item = (props: any) => {
     const { addToast, removeAllToasts } = useToasts();
     const { itemId } = useParams<{ itemId: string }>();
     const token = localStorage.getItem('token');
+    const itemIdNum = Number.parseInt(itemId, 10);
 
-    const { loading, error, data } = useQuery(FIND_ITEMS_BY_NAME, {
+    const { loading, error, data } = useQuery(FIND_ITEMS_BY_ID, {
         fetchPolicy: "cache-and-network",
         nextFetchPolicy: "cache-first",
-        variables: { itemId }
+        variables: { itemId: itemIdNum }
     });
 
-    const [addCartToUser, cartLoading] = useMutation(ADD_CART_TO_USER, {
+    const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
         update(_) {
             removeAllToasts();
             addToast('Successfully added item to cart.', {
@@ -71,104 +61,56 @@ const Item = (props: any) => {
     });
 
     const loadingText = 'Getting item details!'.split('');
-    const item = data && data.findItemById ? data.findItemById.item : null;
+    const getItemRes = data && data.getItemById ? data.getItemById : null;
+    let options: any = [];
+    let variants: any = [];
+    let images: any = getItemRes ? [getItemRes.item.image] : [];
     let CIPQS: any = {};
-    let sizes: any = [];
-    let images: any = [item.displayImage];
 
-    if (item) {
-        item.CIPQS.forEach((itemColor: any) => {
-            CIPQS[itemColor.color] = {};
-            for (let i = 0; i < itemColor.variants.length; i++) {
-                const variantData = itemColor.variants[i];
-                const { price, quantity, size } = variantData;
+    if (getItemRes) {
+        for (let i = 0; i < getItemRes.variations.length; i++) {
+            const { id: variantId, option, variant, image, price, quantity } = getItemRes.variations[i];
 
-                CIPQS[itemColor.color][size] = { price, quantity };
-                CIPQS[itemColor.color]['image'] = itemColor.image;
-                images.push(itemColor.image);
+            options.push(option);
+            if (!variants.includes(variant)) variants.push(variant);
+            images.push(image);
 
-                if (!sizes.includes(size)) sizes.push(size);
+            CIPQS[option] = {
+                image,
+                [variant]: {
+                    variantId,
+                    price: parseFloat(getItemRes.variations[i].price).toFixed(2),
+                    quantity
+                }
             };
-        });
-        document.title = item.name;
+        }
+
+        document.title = getItemRes.item.name;
     };
 
-    let colors: any = Object.keys(CIPQS);
-    const [currentColor, setCurrentColor] = useState(colors[0]);
-    const [currentSize, setCurrentSize] = useState(sizes[0]);
+    const [currentOption, setcurrentOption] = useState(options[0]);
+    const [currentVariant, setcurrentVariant] = useState(variants[0]);
     const [currentQuantity, setCurrentQuantity] = useState(1);
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
-    if (colors.length > 0 && !currentColor) setCurrentColor(colors[0]);
-    if (sizes.length > 0 && !currentSize) setCurrentSize(sizes[0]);
+    if (options.length > 0 && !currentOption) setcurrentOption(options[0]);
+    if (variants.length > 0 && !currentVariant) setcurrentVariant(variants[0]);
 
-    const categoryName = data && data.findItemById.type ?
-        data.findItemById.type.charAt(0).toUpperCase() + data.findItemById.type.slice(1) :
+    const categoryName = data && data.getItemById.item ?
+        data.getItemById.item.type :
         null;
 
     const addToCart = () => {
-        const { checkCachedUser, client } = props;
-        const existingUser = checkCachedUser();
+        const variantId = (CIPQS[currentOption][currentVariant].variantId);
 
-        /* Do all the cart stuff and management */
-        let cart = existingUser && existingUser.cart && existingUser.cart.length > 0 ?
-            JSON.parse(JSON.stringify(existingUser.cart)) :
-            [];
-
-        if (cart && cart.length > 0) {
-            let doesItemExist = false;
-            /* Loop through cart and check if item exists */
-            for (let i = 0; i < cart.length; i++) {
-                if (cart[i].itemId === item._id && cart[i].color === currentColor && cart[i].size === currentSize) {
-                    if (cart[i].quantity + currentQuantity > CIPQS[currentColor][currentSize].quantity) {
-                        removeAllToasts();
-                        addToast('Failed to add item to cart.  Total quantity exceeds available amount.', {
-                            appearance: 'error',
-                            autoDismiss: true,
-                        });
-                        return;
-                    } else {
-                        console.log(cart[i])
-                        doesItemExist = true;
-                        cart[i].quantity += currentQuantity;
-                    }
-                }
+        addItemToCart({
+            variables: {
+                itemInfo: { variantId, quantity: currentQuantity }
             }
-
-            if (!doesItemExist) cart.push({
-                itemId: item._id,
-                color: currentColor,
-                size: currentSize,
-                quantity: currentQuantity,
-                image: CIPQS[currentColor]['image'],
-                name: item.name,
-                price: CIPQS[currentColor][currentSize].price
-            });
-        } else {
-            cart.push({
-                itemId: item._id,
-                color: currentColor,
-                size: currentSize,
-                quantity: currentQuantity,
-                image: CIPQS[currentColor]['image'],
-                name: item.name,
-                price: CIPQS[currentColor][currentSize].price
-            });
-        }
-
-        /* Remove __typename from cart items */
-        cart.forEach((cartItem: any) => delete cartItem.__typename);
-
-        /* Write data to user */
-        if (existingUser && token) {
-            addCartToUser({ variables: { CartInput: { items: cart } } }).catch(e => {
-                removeAllToasts();
-                addToast(e.message, {
-                    appearance: 'error',
-                    autoDismiss: true,
-                });
-            })
-        }
+        }).catch(e => addToast(e.message, {
+            appearance: 'error',
+            autoDismiss: true,
+        }));
     };
 
     const handleQuantityChange = (e: any, isIncrement?: boolean) => {
@@ -176,7 +118,7 @@ const Item = (props: any) => {
 
         if (targetToInt && (
             targetToInt < 1 ||
-            targetToInt > CIPQS[currentColor][currentSize].quantity
+            targetToInt > CIPQS[currentOption][currentVariant].quantity
         ) && e.target.value != ''
         ) return;
 
@@ -199,7 +141,7 @@ const Item = (props: any) => {
             variants={pageVariants}
             className='qwerty-shop-app-page-transition'
         >
-            {loading || !item || Object.keys(CIPQS).length === 0 || !currentColor ? (
+            { !error && (loading || !getItemRes || Object.keys(CIPQS).length === 0 || !currentOption) ? (
                 <div className='qwerty-shop-loading-full'>
                     <LoadingSpinner />
                     <div className='qwerty-shop-loading-text-container'>
@@ -220,7 +162,7 @@ const Item = (props: any) => {
                     { error ? <p style={{ color: 'red' }}>{error.message}</p> : (
                         <>
                             <div className='qwerty-shop-item-page'>
-                                <NavLink to={`/products/${data.findItemById.type}`} className='qwerty-shop-item-back-btn'>{'<'} Back to {categoryName}</NavLink>
+                                <NavLink to={`/products/${categoryName}`} className='qwerty-shop-item-back-btn'>{'<'} Back to {categoryName}</NavLink>
                                 <div className='qwerty-shop-item-info-container'>
                                     <div className='qwerty-shop-item-info-left'>
                                         <div className='qwerty-shop-item-image-container'>
@@ -258,70 +200,60 @@ const Item = (props: any) => {
                                         </div>
                                     </div>
                                     <div className='qwerty-shop-item-info-right'>
-                                        <div className='qwerty-shop-item-name'>{item.name}</div>
-                                        <div className='qwerty-shop-item-price'>${CIPQS[currentColor][currentSize].price}</div>
-                                        <div className='qwerty-shop-item-quantity'>Stock: {CIPQS[currentColor][currentSize].quantity}</div>
+                                        <div className='qwerty-shop-item-name'>{getItemRes.item.name}</div>
+                                        <div className='qwerty-shop-item-price'>${CIPQS[currentOption][currentVariant].price}</div>
+                                        <div className='qwerty-shop-item-quantity'>Stock: {CIPQS[currentOption][currentVariant].quantity}</div>
                                         <div className='qwerty-shop-item-section-container'>
-                                            <div className='qwerty-shop-item-label'>Colors:</div>
-                                            <div className='qwerty-shop-item-colors'>
-                                                {colors.map((color: any) => {
-                                                    if (CIPQS[color][currentSize] && CIPQS[color][currentSize].quantity > 0) {
-                                                        const selectedClass = color === currentColor ? 'qwerty-shop-item-variation-selected' : '';
-                                                        return (
-                                                            <div
-                                                                className={`qwerty-shop-item-variation-btn ${selectedClass}`}
-                                                                key={`qwerty-shop-${item.name}-${color}`}
-                                                                onClick={
-                                                                    () => {
-                                                                        setCurrentColor(color);
-                                                                        for (let i = 0; i < images.length; i++) {
-                                                                            if (images[i] === CIPQS[color]['image']) setCurrentImageIdx(i);
-                                                                        }
-                                                                        setCurrentQuantity(1);
+                                            <div className='qwerty-shop-item-label'>Options:</div>
+                                            <div className='qwerty-shop-item-options'>
+                                                {options.map((option: any) => {
+                                                    const selectedClass = option === currentOption ? 'qwerty-shop-item-variation-selected' : '';
+                                                    return (
+                                                        <div
+                                                            className={`qwerty-shop-item-variation-btn ${selectedClass}`}
+                                                            key={`qwerty-shop-${getItemRes.item.name}-${option}`}
+                                                            onClick={
+                                                                () => {
+                                                                    setcurrentOption(option);
+                                                                    for (let i = 0; i < images.length; i++) {
+                                                                        if (images[i] === CIPQS[option]['image']) setCurrentImageIdx(i);
                                                                     }
+                                                                    if (!CIPQS[option][currentVariant]) setcurrentVariant(Object.keys(CIPQS[option])[1])
+                                                                    setCurrentQuantity(1);
                                                                 }
-                                                            >
-                                                                {color}
-                                                            </div>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <div
-                                                                className='qwerty-shop-item-variation-unavailable-btn'
-                                                                key={`qwerty-shop-${item.name}-${color}`}
-                                                            >
-                                                                {color}
-                                                            </div>
-                                                        )
-                                                    }
+                                                            }
+                                                        >
+                                                            {option}
+                                                        </div>
+                                                    )
                                                 })}
                                             </div>
                                         </div>
                                         <div className='qwerty-shop-item-section-container'>
-                                            <div className='qwerty-shop-item-label'>Sizes:</div>
-                                            <div className='qwerty-shop-item-sizes'>
-                                                {sizes.map((size: any) => {
-                                                    if (CIPQS[currentColor][size] && CIPQS[currentColor][size].quantity > 0) {
-                                                        const selectedClass = size === currentSize ? 'qwerty-shop-item-variation-selected' : '';
+                                            <div className='qwerty-shop-item-label'>Variants:</div>
+                                            <div className='qwerty-shop-item-variants'>
+                                                {variants.map((variant: any) => {
+                                                    if (CIPQS[currentOption][variant] && CIPQS[currentOption][variant].quantity > 0) {
+                                                        const selectedClass = variant === currentVariant ? 'qwerty-shop-item-variation-selected' : '';
                                                         return (
                                                             <div
                                                                 className={`qwerty-shop-item-variation-btn ${selectedClass}`}
-                                                                key={`qwerty-shop-${item.name}-${size}`}
+                                                                key={`qwerty-shop-${getItemRes.item.name}-${variant}`}
                                                                 onClick={() => {
-                                                                    setCurrentSize(size)
+                                                                    setcurrentVariant(variant)
                                                                     setCurrentQuantity(1);
                                                                 }}
                                                             >
-                                                                {size}
+                                                                {variant}
                                                             </div>
                                                         )
                                                     } else {
                                                         return (
                                                             <div
                                                                 className='qwerty-shop-item-variation-unavailable-btn'
-                                                                key={`qwerty-shop-${item.name}-${size}`}
+                                                                key={`qwerty-shop-${getItemRes.item.name}-${variant}`}
                                                             >
-                                                                {size}
+                                                                {variant}
                                                             </div>
                                                         )
                                                     }
@@ -330,14 +262,14 @@ const Item = (props: any) => {
                                         </div>
                                         <div className='qwerty-shop-item-section-container'>
                                             <div className='qwerty-shop-item-label'>Description: </div>
-                                            <div className='qwerty-shop-item-description'>{item.description}</div>
+                                            <div className='qwerty-shop-item-description'>{getItemRes.item.description}</div>
                                         </div>
                                         <div className='qwerty-shop-item-section-container qwerty-shop-item-quantity-container'>
                                             <input
                                                 type='number'
                                                 className='qwerty-shop-item-quantity-input'
                                                 min='1'
-                                                max={CIPQS[currentColor][currentSize].quantity}
+                                                max={CIPQS[currentOption][currentVariant].quantity}
                                                 onChange={handleQuantityChange}
                                                 step='1'
                                                 value={currentQuantity}

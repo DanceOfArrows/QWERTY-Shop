@@ -51,6 +51,7 @@ export const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
 export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
     const { checkCachedUser, component: Component, exact, path, setToken, token } = props;
     const existingUser = checkCachedUser();
+    console.log(existingUser)
     const loadingText = 'Checking user info!'.split('');
     const [getUserInfo, { called, loading, data }] = useLazyQuery(GET_USER_INFO, {
         fetchPolicy: 'network-only',
@@ -58,7 +59,7 @@ export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
     });
 
     useEffect(() => {
-        if (token && (!existingUser || !existingUser._id)) {
+        if (token && (!existingUser || !existingUser.id)) {
             getUserInfo();
         }
     }, [token])
@@ -87,7 +88,7 @@ export const AuthRoute: React.FC<AuthCheck> = (props: any) => {
                         path={path}
                         exact={exact}
                         render={(reactProps) =>
-                            !existingUser || !existingUser._id || !token ?
+                            !existingUser || !existingUser.id || !token ?
                                 <Component {...reactProps} checkCachedUser={checkCachedUser} setToken={setToken} /> :
                                 <Redirect to='/' />
                         }

@@ -32,28 +32,8 @@ const { AuthRoute, ProtectedRoute } = AuthRoutes;
 export const GET_USER_INFO = gql`
   query getUserData {
     getUserData {
-      _id,
-        addresses {
-            country,
-            fullName,
-            phoneNumber,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zipCode,
-            default
-        },
-        cart {
-            itemId,
-            color,
-            size,
-            quantity,
-            image,
-            name,
-            price
-        },
-        email,
+      id,
+      email,
     }
   }
 `;
@@ -73,29 +53,9 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       id: 'userInfo',
       fragment:
         gql`
-        fragment UserInfo on UserNoPW {
-            _id,
-            addresses {
-              country,
-              fullName,
-              phoneNumber,
-              addressLineOne,
-              addressLineTwo,
-              city,
-              state,
-              zipCode,
-              default
-            },
+        fragment UserInfo on User {
+            id,
             email,
-            cart {
-              itemId,
-              color,
-              size,
-              quantity,
-              image,
-              name,
-              price
-            }
         }
       `,
     });
@@ -118,35 +78,13 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       id: 'userInfo',
       fragment:
         gql`
-            fragment UserInfo on UserNoPW {
-                _id,
-                addresses {
-                    country,
-                    fullName,
-                    phoneNumber,
-                    addressLineOne,
-                    addressLineTwo,
-                    city,
-                    state,
-                    zipCode,
-                    default
-                },
+            fragment UserInfo on User {
+                id,
                 email,
-                cart {
-                    itemId,
-                    color,
-                    size,
-                    quantity,
-                    image,
-                    name,
-                    price
-                }
           }
         `,
       data: {
         _id: null,
-        addresses: [],
-        cart: [],
         email: null,
       }
     });

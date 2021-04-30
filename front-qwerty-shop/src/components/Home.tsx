@@ -45,7 +45,7 @@ const Home = () => {
             </div>
             <div className='qwerty-shop-home-hero-text'>
                 [Featured] Kat Eternal Keycaps Set
-                <NavLink className='qwerty-shop-home-hero-button' to='/item/606fdfa967cf4755546796a2'>
+                <NavLink className='qwerty-shop-home-hero-button' to='/item/1'>
                     Details
                 </NavLink>
             </div>

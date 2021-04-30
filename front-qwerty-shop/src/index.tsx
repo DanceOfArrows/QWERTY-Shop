@@ -23,7 +23,7 @@ const setupApollo = async () => {
         keyFields: () => 'token',
         merge: true,
       },
-      UserNoPW: {
+      User: {
         keyFields: () => 'userInfo',
         merge: true,
       },

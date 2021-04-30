@@ -9,24 +9,22 @@ import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
 const FIND_ITEMS_BY_TYPE = gql`
-  query findItemsByType($itemType: String!) {
-    findItemsByType(itemType: $itemType) {
-        items {
-            CIPQS {
-                color,
-                image,
-                variants {
-                    price,
-                    quantity,
-                    size
-                }
-            },
-            description,
-            displayImage,
+  query getItemsByType($type: String!) {
+    getItemsByType(type: $type) {
+        item {
+            id,
             name,
-            _id,
+            image,
+            description,
+            type,
         },
-        type
+        variations {
+            option,
+            variant,
+            quantity,
+            price,
+            image,
+        }
     }
   }
 `;
@@ -38,7 +36,7 @@ const Product = () => {
     const { loading, error, data } = useQuery(FIND_ITEMS_BY_TYPE, {
         fetchPolicy: "cache-and-network",
         nextFetchPolicy: "cache-first",
-        variables: { itemType: productType }
+        variables: { type: productType }
     });
     const loadingText = 'Finding wonderful items!'.split('');
 
@@ -73,21 +71,22 @@ const Product = () => {
                         <>
                             <NavLink to={'/products'} className='qwerty-shop-item-back-btn'>{'<'} Back to Products</NavLink>
                             <div className='qwerty-shop-item-list'>
-                                {data && data.findItemsByType ? (
-                                    data.findItemsByType.items.map((item: any) => {
-                                        const itemVariations = item.CIPQS;
+                                {data && data.getItemsByType ? (
+                                    data.getItemsByType.map((itemRes: any) => {
+                                        const itemVariations = itemRes.variations;
+                                        const item = itemRes.item;
                                         let itemPricesToSort: any = [];
 
-                                        for (let itemVariation in itemVariations) {
-                                            const item = itemVariations[itemVariation]
-                                            item.variants.forEach((itemVariant: any) => itemPricesToSort.push(itemVariant.price))
-                                        };
+                                        for (let i = 0; i < itemVariations.length; i++) {
+                                            const price = parseFloat(itemVariations[i].price).toFixed(2);
+                                            itemPricesToSort.push(price)
+                                        }
 
                                         itemPricesToSort.sort();
 
                                         return (
-                                            <NavLink to={`/item/${item._id}`} className='qwerty-shop-item-container' key={`qwerty-shop-item-${item.name}`}>
-                                                <img className='qwerty-shop-item-image' src={item.displayImage} alt='item-img' />
+                                            <NavLink to={`/item/${item.id}`} className='qwerty-shop-item-container' key={`qwerty-shop-item-${item.name}`}>
+                                                <img className='qwerty-shop-item-image' src={item.image} alt='item-img' />
                                                 <div className='qwerty-shop-item-name'>{item.name}</div>
                                                 <div className='qwerty-shop-item-price'>${itemPricesToSort[0]} - ${itemPricesToSort[itemPricesToSort.length - 1]}</div>
                                             </NavLink>

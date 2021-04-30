@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique @db.VarChar
+  password  String    @db.VarChar
+  cart      Cart?
+  orders    Order[]
+  addresses Address[]
+}
+
+model Type {
+  id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar
+  items Item[]
+}
+
+model Item {
+  id              Int             @id @default(autoincrement())
+  name            String          @unique @db.VarChar
+  image           String          @unique @db.VarChar
+  description     String          @db.VarChar
+  type_id         Int
+  type            Type            @relation(fields: [type_id], references: [id])
+  line_items      LineItem[]
+  item_variations ItemVariation[]
+}
+
+model ItemVariation {
+  id        Int       @id @default(autoincrement())
+  option    String    @db.VarChar
+  variant   String    @db.VarChar
+  quantity  Int       @db.SmallInt
+  price     Decimal   @db.Decimal(5, 2)
+  image     String    @db.VarChar
+  item_id   Int
+  item      Item      @relation(fields: [item_id], references: [id])
+  cart_item CartItem?
+}
+
+model Cart {
+  id         Int        @id @default(autoincrement())
+  user_id    Int        @unique
+  user       User       @relation(fields: [user_id], references: [id])
+  cart_items CartItem[]
+}
+
+model CartItem {
+  id                Int           @id @default(autoincrement())
+  cart_id           Int
+  cart              Cart          @relation(fields: [cart_id], references: [id])
+  item_variation_id Int
+  item_variation    ItemVariation @relation(fields: [item_variation_id], references: [id])
+  quantity          Int           @db.SmallInt
+}
+
+model Order {
+  id         Int        @id @default(autoincrement())
+  user_id    Int
+  user       User       @relation(fields: [user_id], references: [id])
+  line_items LineItem[]
+}
+
+model LineItem {
+  id       Int   @id @default(autoincrement())
+  order_id Int
+  order    Order @relation(fields: [order_id], references: [id])
+  item_id  Int
+  item     Item  @relation(fields: [item_id], references: [id])
+  quantity Int   @db.SmallInt
+}
+
+model Address {
+  id               Int    @id @default(autoincrement())
+  country          String @db.VarChar
+  full_name        String @db.VarChar
+  phone_number     String @db.VarChar
+  address_line_one String @db.VarChar
+  address_line_two String @db.VarChar
+  city             String @db.VarChar
+  state            String @db.VarChar
+  zip_code         String @db.VarChar
+  default          String @db.VarChar
+  user_id          Int
+  user             User   @relation(fields: [user_id], references: [id])
+}

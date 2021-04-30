@@ -7,8 +7,8 @@ import { useToasts } from 'react-toast-notifications'
 import LoadingSpinner from './LoadingSpinner';
 
 const SIGN_UP = gql`
-  mutation createUser($CreateUserInput: CreateUserInput!) {
-    createUser(createUserData: $CreateUserInput)
+  mutation createUser($NewUserInput: NewUserInput!) {
+    register(newUserData: $NewUserInput)
   }
 `;
 
@@ -26,7 +26,7 @@ const SignUp = (props: any) => {
             appearance: 'error',
             autoDismiss: true,
         });
-        else signup({ variables: { CreateUserInput: { email, password } } }).catch(e => addToast(e.message, {
+        else signup({ variables: { NewUserInput: { email, password } } }).catch(e => addToast(e.message, {
             appearance: 'error',
             autoDismiss: true,
         }));

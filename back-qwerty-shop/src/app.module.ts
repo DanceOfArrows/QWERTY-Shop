@@ -1,16 +1,21 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { MongooseModule } from '@nestjs/mongoose';
-
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { ItemsModule } from './items/items.module';
-import { OrdersModule } from './orders/orders.module';
 import { join } from 'path';
+
+import { AppController } from './controllers/app.controller';
+import * as Modules from './modules/exportModules';
+import * as Services from './services/exportServices';
+
+const { AuthModule, CartsModule, ItemsModule, UsersModule } = Modules;
+const {
+  AppService,
+  CartsService,
+  ItemsService,
+  PrismaService,
+  UsersService
+} = Services;
 
 @Module({
   imports: [
@@ -18,7 +23,7 @@ import { join } from 'path';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       cors: {
-        origin: 'https://qwerty-shop-app.herokuapp.com',
+        origin: 'http://localhost:3000',
         credentials: true,
       },
       sortSchema: true,
@@ -31,22 +36,18 @@ import { join } from 'path';
         return graphQLFormattedError;
       },
     }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-        useCreateIndex: true,
-        useFindAndModify: false,
-        useNewUrlParser: true,
-      }),
-      inject: [ConfigService],
-    }),
     AuthModule,
-    UsersModule,
+    CartsModule,
     ItemsModule,
-    OrdersModule
+    UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    CartsService,
+    ItemsService,
+    PrismaService,
+    UsersService
+  ],
 })
 export class AppModule { }

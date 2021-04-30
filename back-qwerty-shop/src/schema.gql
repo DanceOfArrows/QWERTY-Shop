@@ -2,136 +2,119 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input AddAddressInput {
-  addressLineOne: String!
-  addressLineTwo: String!
-  city: String!
-  country: String!
-  default: Boolean!
-  fullName: String!
-  phoneNumber: String!
-  state: String!
-  zipCode: String!
+input AddItemToCartInput {
+  """Amount to be added to cart"""
+  quantity: Int!
+
+  """variantId to be added to cart"""
+  variantId: Int!
 }
 
 type Address {
-  addressLineOne: String!
-  addressLineTwo: String!
+  address_line_one: String!
+  address_line_two: String!
   city: String!
   country: String!
-  default: Boolean!
-  fullName: String!
-  phoneNumber: String!
+  default: String!
+  full_name: String!
+  phone_number: String!
   state: String!
-  zipCode: String!
+  zip_code: String!
 }
 
 type AuthToken {
+  """JWT access token"""
   token: String!
 }
 
-input CartInput {
-  items: [CartItemInput!]!
-}
-
 type CartItem {
-  color: String!
-  image: String!
-  itemId: ID!
-  name: String!
-  price: Float!
-  quantity: Float!
-  size: String!
-}
+  """Cart item original item"""
+  item: Item!
 
-input CartItemInput {
-  color: String!
-  image: String!
-  itemId: ID!
-  name: String!
-  price: Float!
-  quantity: Float!
-  size: String!
-}
+  """Cart item variation"""
+  item_variation: Variation!
 
-type CIPQS {
-  color: String!
-  image: String!
-  variants: [PQS!]!
+  """Cart item variation quantity"""
+  quantity: Int!
 }
-
-input CreateUserInput {
-  email: String!
-  password: String!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Item {
-  _id: ID!
-  CIPQS: [CIPQS!]!
+  """Item description"""
   description: String!
-  displayImage: String!
+
+  """Item PostgreSQL ID"""
+  id: Float!
+
+  """Item image URL"""
+  image: String!
+
+  """Item name"""
   name: String!
+
+  """Item type"""
   type: String!
 }
 
-type ItemType {
-  items: [Item!]!
-  type: String!
+type ItemAndVariations {
+  """Item PostgreSQL ID"""
+  item: Item!
+
+  """Item variations"""
+  variations: [Variation!]!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 type Mutation {
-  addAddress(addAddressData: AddAddressInput!): UserInfo!
-  addCartToUser(cart: CartInput!): UserNoPW!
-  checkoutOrder(address: AddAddressInput!, cart: CartInput!): Order!
-  createUser(createUserData: CreateUserInput!): String!
-  signIn(signInData: SignInInput!): AuthToken!
+  addToCart(itemInfo: AddItemToCartInput!): String!
+  login(loginData: LoginInput!): AuthToken!
+  register(newUserData: NewUserInput!): String!
 }
 
-type Order {
-  address: Address!
-  items: [CartItem!]!
-  saleDate: DateTime!
-  user_id: ID!
-}
-
-type PQS {
-  price: Float!
-  quantity: Float!
-  size: String!
-}
-
-type Query {
-  findItemById(itemId: String!): SingleItemType!
-  findItemsByType(itemType: String!): ItemType!
-  getOrders: [Order!]!
-  getUserData: UserNoPW!
-}
-
-input SignInInput {
+input NewUserInput {
   email: String!
   password: String!
 }
 
-type SingleItemType {
-  item: Item!
-  type: String!
+type Query {
+  getItemById(itemId: Float!): ItemAndVariations!
+  getItemsByType(type: String!): [ItemAndVariations!]!
+  getUserData: User!
 }
 
-type UserInfo {
-  _id: ID!
+type User {
+  """User addresses"""
   addresses: [Address!]!
-  cart: [CartItem!]!
+
+  """User cart with item(s)"""
+  cart: String!
+
+  """User email"""
   email: String!
+
+  """User Id in PostgreSQL"""
+  id: Int!
 }
 
-type UserNoPW {
-  _id: ID!
-  addresses: [Address!]!
-  cart: [CartItem!]!
-  email: String!
+type Variation {
+  """Item variation PostgreSQL ID"""
+  id: Float!
+
+  """Item variation image"""
+  image: String!
+
+  """Item variation color"""
+  option: String!
+
+  """Item variation price"""
+  price: String!
+
+  """Item variation quantity"""
+  quantity: Float!
+
+  """Item variation size"""
+  variant: String!
 }

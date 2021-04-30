@@ -14,14 +14,14 @@ const ProductCategories = () => {
                     style={{ backgroundImage: `url(${BackgroundImages.Accessories})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/accessories'>Accessories</NavLink>
+                    <NavLink to='/products/Accessories'>Accessories</NavLink>
                 </div>
                 <div
                     className='qwerty-shop-home-product-category'
                     style={{ backgroundImage: `url(${BackgroundImages.Cases})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/cases'>
+                    <NavLink to='/products/Cases'>
                         Cases
                     </NavLink>
                 </div>
@@ -30,7 +30,7 @@ const ProductCategories = () => {
                     style={{ backgroundImage: `url(${BackgroundImages.DIYKits})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/diykits'>
+                    <NavLink to='/products/DIY Kits'>
                         DIY Kits
                     </NavLink>
                 </div>
@@ -39,7 +39,7 @@ const ProductCategories = () => {
                     style={{ backgroundImage: `url(${BackgroundImages.Keycaps})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/keycaps'>
+                    <NavLink to='/products/Keycaps'>
                         Keycaps
                     </NavLink>
                 </div>
@@ -48,7 +48,7 @@ const ProductCategories = () => {
                     style={{ backgroundImage: `url(${BackgroundImages.NewArrivals})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/newarrivals'>
+                    <NavLink to='/products/New Arrivals'>
                         New Arrivals
                     </NavLink>
                 </div>
@@ -57,7 +57,7 @@ const ProductCategories = () => {
                     style={{ backgroundImage: `url(${BackgroundImages.Switches})` }}
                 >
                     <div className='qwerty-shop-home-product-category-cover' />
-                    <NavLink to='/products/switches'>
+                    <NavLink to='/products/Switches'>
                         Switches
                     </NavLink>
                 </div>
