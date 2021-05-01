@@ -9,7 +9,7 @@ import { UseGuards } from '@nestjs/common';
 
 import { AuthGuard } from "./auth.gaurd";
 import { UsersService } from '../services/users.service';
-import { User } from '../models/user.model';
+import { FullUser, User } from '../models/user.model';
 
 import { NewUserInput } from '../inputs/user.inputs';
 
@@ -26,7 +26,7 @@ export class UserResolver {
         return this.usersService.createUser(newUserData);
     };
 
-    @Query(() => User)
+    @Query(() => FullUser)
     @UseGuards(AuthGuard)
     getUserData(
         @Context('user') user: User

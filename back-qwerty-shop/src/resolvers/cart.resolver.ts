@@ -28,4 +28,12 @@ export class CartResolver {
     ) {
         return this.cartsService.addToCart({ userId: user.id, ...itemInfo });
     };
+
+    @Mutation(() => String)
+    @UseGuards(AuthGuard)
+    emptyCart(
+        @Context('user') user: User,
+    ) {
+        return this.cartsService.emptyCart(user.id);
+    };
 };

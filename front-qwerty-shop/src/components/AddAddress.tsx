@@ -37,7 +37,7 @@ const AddAddress = (props: any) => {
                 id: 'userInfo',
                 fragment:
                     gql`
-                    fragment UserInfo on User {
+                    fragment UserInfo on FullUser {
                         id,
                         email,
                   }

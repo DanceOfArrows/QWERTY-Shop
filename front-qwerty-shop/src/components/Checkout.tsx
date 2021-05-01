@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { NavLink, withRouter } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications'
 
+import { calcTotalPrice } from './Cart';
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
@@ -40,13 +41,14 @@ const Checkout = (props: any) => {
     const { addToast, removeAllToasts } = useToasts();
     const [currentAddressIdx, setAddressIdx] = useState(0);
     const userInfo = props.checkCachedUser();
-    const addresses = JSON.parse(JSON.stringify(userInfo.addresses)).sort((a: any, b: any) => {
+    const addresses = userInfo.addresses && userInfo.addresses.length > 0 ? JSON.parse(JSON.stringify(userInfo.addresses)).sort((a: any, b: any) => {
         const aVal = a.default ? 1 : -1;
         const bVal = b.default ? 1 : -1;
 
         return bVal - aVal;
-    });
+    }) : [];
     const cart = JSON.parse(JSON.stringify(userInfo.cart));
+    console.log(cart)
     const loadingText = 'Checking out items!'.split('');
 
     const [checkoutItems, { loading: checkoutLoading }] = useMutation(CHECK_OUT, {
@@ -68,6 +70,7 @@ const Checkout = (props: any) => {
             totalPrice += (price * quantity);
         })
     }
+    const totalPriceDisplay = parseFloat(totalPrice.toString()).toFixed(2);
 
     const handleCheckout = () => {
         cart.forEach((cartItem: any) => delete cartItem.__typename);
@@ -114,21 +117,34 @@ const Checkout = (props: any) => {
                         <div className='qwerty-shop-checkout-items-container'>
                             {cart && cart.length > 0 ?
                                 (
-                                    cart.map((cartItem: any) => (
-                                        <div className='qwerty-shop-cart-item' key={`checkout ${cartItem.itemId} ${cartItem.color} ${cartItem.size}`}>
-                                            <img className='qwerty-shop-cart-item-image' src={cartItem.image} alt='item image' />
-                                            <div className='qwerty-shop-cart-item-info-container'>
-                                                <NavLink to={`/item/${cartItem.itemId}`} className='qwerty-shop-cart-item-info-name'>{cartItem.name}</NavLink>
-                                                <div>Color: <span className='qwerty-shop-cart-item-info-color'>{cartItem.color}</span> </div>
-                                                <div>Size: <span className='qwerty-shop-cart-item-info-size'>{cartItem.size}</span>
+                                    cart.map((cartItem: any) => {
+                                        const { item, item_variation, quantity } = cartItem;
+                                        const { id: itemId, name } = item;
+                                        const {
+                                            id: itemVariationId,
+                                            image,
+                                            option,
+                                            variant,
+                                            price
+                                        } = item_variation;
+                                        const displayPrice = parseFloat(price).toFixed(2);
+
+                                        return (
+                                            <div className='qwerty-shop-cart-item' key={`cart ${itemVariationId}`}>
+                                                <img className='qwerty-shop-cart-item-image' src={image} alt='item image' />
+                                                <div className='qwerty-shop-cart-item-info-container'>
+                                                    <NavLink to={`/item/${itemId}`} className='qwerty-shop-cart-item-info-name'>{name}</NavLink>
+                                                    <div>Option: <span className='qwerty-shop-cart-item-info-color'>{option}</span> </div>
+                                                    <div>Variant: <span className='qwerty-shop-cart-item-info-size'>{variant}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className='qwerty-shop-cart-item-price'>Price per: ${displayPrice}</div>
+                                                    <div className='qwerty-shop-cart-item-quantity'>Qty: {quantity}</div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <div className='qwerty-shop-cart-item-price'>Price per: ${cartItem.price}</div>
-                                                <div className='qwerty-shop-cart-item-quantity'>Qty: {cartItem.quantity}</div>
-                                            </div>
-                                        </div>
-                                    ))
+                                        )
+                                    })
                                 ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
                             }
                         </div>
@@ -166,14 +182,14 @@ const Checkout = (props: any) => {
                                         }
                                     </form>
                                 ) : (
-                                    <div>Add an address to complete checkout!</div>
+                                    <div style={{ textAlign: 'center' }}>Add an address to complete checkout!</div>
                                 )
                             }
                         </div>
-                        <div className='qwerty-shop-checkout-total'>Total: ${totalPrice}</div>
+                        <div className='qwerty-shop-checkout-total'>Total: ${calcTotalPrice(cart)}</div>
                         <div className='qwerty-shop-cart-buttons-container'>
                             {
-                                cart && cart.length > 0 && addresses && Object.keys(addresses[currentAddressIdx]).length > 0 ? (
+                                cart && cart.length > 0 && addresses.length > 0 && Object.keys(addresses[currentAddressIdx]).length > 0 ? (
                                     <div onClick={handleCheckout}>Confirm Checkout</div>
                                 ) : <div className='qwerty-shop-cart-checkoutCrossed'>Confirm Checkout</div>
                             }

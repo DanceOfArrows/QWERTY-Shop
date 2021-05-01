@@ -32,7 +32,7 @@ const FIND_ITEMS_BY_ID = gql`
   }
 `;
 
-export const ADD_ITEM_TO_CART = gql`
+const ADD_ITEM_TO_CART = gql`
   mutation addToCart($itemInfo: AddItemToCartInput!) {
     addToCart(itemInfo: $itemInfo)
   }

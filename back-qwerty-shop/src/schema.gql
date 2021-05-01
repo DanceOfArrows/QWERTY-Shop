@@ -38,6 +38,20 @@ type CartItem {
   quantity: Int!
 }
 
+type FullUser {
+  """User addresses"""
+  addresses: [Address!]!
+
+  """User cart with item(s)"""
+  cart: [CartItem!]!
+
+  """User email"""
+  email: String!
+
+  """User Id in PostgreSQL"""
+  id: Int!
+}
+
 type Item {
   """Item description"""
   description: String!
@@ -70,6 +84,7 @@ input LoginInput {
 
 type Mutation {
   addToCart(itemInfo: AddItemToCartInput!): String!
+  emptyCart: String!
   login(loginData: LoginInput!): AuthToken!
   register(newUserData: NewUserInput!): String!
 }
@@ -82,21 +97,7 @@ input NewUserInput {
 type Query {
   getItemById(itemId: Float!): ItemAndVariations!
   getItemsByType(type: String!): [ItemAndVariations!]!
-  getUserData: User!
-}
-
-type User {
-  """User addresses"""
-  addresses: [Address!]!
-
-  """User cart with item(s)"""
-  cart: String!
-
-  """User email"""
-  email: String!
-
-  """User Id in PostgreSQL"""
-  id: Int!
+  getUserData: FullUser!
 }
 
 type Variation {

@@ -1122,6 +1122,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
         .qwerty-shop-cart-checkoutCrossed {
             text-decoration: line-through;
+            cursor: default;
 
             &:active {
                 transform: none;

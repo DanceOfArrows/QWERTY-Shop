@@ -1,11 +1,28 @@
-import { useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 import { useToasts } from 'react-toast-notifications'
 
-import { ADD_ITEM_TO_CART } from './Item';
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
+
+export const calcTotalPrice = (cart: any) => {
+    let totalPrice = 0;
+    if (cart && cart.length > 0) {
+        cart.forEach((item: any) => {
+            const price = item.item_variation.price;
+            const quantity = item.quantity;
+            totalPrice += (price * quantity);
+        })
+    };
+    return parseFloat(totalPrice.toString()).toFixed(2);
+};
+
+const EMPTY_CART = gql`
+  mutation emptyCart {
+    emptyCart
+  }
+`;
 
 const Cart = (props: any) => {
     document.title = 'QWERTY Shop - Cart';
@@ -14,8 +31,9 @@ const Cart = (props: any) => {
     const cart = userInfo.cart;
     const loadingText = 'Emptying cart!'.split('');
 
-    const [addItemToCart, { loading: cartLoading }] = useMutation(ADD_ITEM_TO_CART, {
+    const [emptyCart, { loading: cartLoading }] = useMutation(EMPTY_CART, {
         update(_) {
+            props.getUserInfo();
             removeAllToasts();
             addToast('Successfully emptied cart.', {
                 appearance: 'success',
@@ -23,14 +41,6 @@ const Cart = (props: any) => {
             });
         }
     });
-
-    let totalPrice = 0;
-    if (cart && cart.length > 0) {
-        cart.forEach((item: any) => {
-            const { price, quantity } = item;
-            totalPrice += (price * quantity);
-        })
-    }
 
     const handleEmptyCart = () => {
         if (userInfo.cart.length === 0) {
@@ -41,8 +51,9 @@ const Cart = (props: any) => {
             });
             return;
         }
-        addItemToCart({ variables: { CartInput: { items: [] } } }).catch(e => {
+        emptyCart({ variables: { CartInput: { items: [] } } }).catch(e => {
             removeAllToasts();
+            console.log(e)
             addToast(e.message, {
                 appearance: 'error',
                 autoDismiss: true,
@@ -82,25 +93,38 @@ const Cart = (props: any) => {
                         <div className='qwerty-shop-cart-items-container'>
                             {cart && cart.length > 0 ?
                                 (
-                                    cart.map((cartItem: any) => (
-                                        <div className='qwerty-shop-cart-item' key={`cart ${cartItem.itemId} ${cartItem.color} ${cartItem.size}`}>
-                                            <img className='qwerty-shop-cart-item-image' src={cartItem.image} alt='item image' />
-                                            <div className='qwerty-shop-cart-item-info-container'>
-                                                <NavLink to={`/item/${cartItem.itemId}`} className='qwerty-shop-cart-item-info-name'>{cartItem.name}</NavLink>
-                                                <div>Color: <span className='qwerty-shop-cart-item-info-color'>{cartItem.color}</span> </div>
-                                                <div>Size: <span className='qwerty-shop-cart-item-info-size'>{cartItem.size}</span>
+                                    cart.map((cartItem: any) => {
+                                        const { item, item_variation, quantity } = cartItem;
+                                        const { id: itemId, name } = item;
+                                        const {
+                                            id: itemVariationId,
+                                            image,
+                                            option,
+                                            variant,
+                                            price
+                                        } = item_variation;
+                                        const displayPrice = parseFloat(price).toFixed(2);
+
+                                        return (
+                                            <div className='qwerty-shop-cart-item' key={`cart ${itemVariationId}`}>
+                                                <img className='qwerty-shop-cart-item-image' src={image} alt='item image' />
+                                                <div className='qwerty-shop-cart-item-info-container'>
+                                                    <NavLink to={`/item/${itemId}`} className='qwerty-shop-cart-item-info-name'>{name}</NavLink>
+                                                    <div>Option: <span className='qwerty-shop-cart-item-info-color'>{option}</span> </div>
+                                                    <div>Variant: <span className='qwerty-shop-cart-item-info-size'>{variant}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div className='qwerty-shop-cart-item-price'>Price per: ${displayPrice}</div>
+                                                    <div className='qwerty-shop-cart-item-quantity'>Qty: {quantity}</div>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <div className='qwerty-shop-cart-item-price'>Price per: ${cartItem.price}</div>
-                                                <div className='qwerty-shop-cart-item-quantity'>Qty: {cartItem.quantity}</div>
-                                            </div>
-                                        </div>
-                                    ))
+                                        )
+                                    })
                                 ) : <div style={{ textAlign: 'center' }}>Cart is empty!</div>
                             }
                         </div>
-                        <div className='qwerty-shop-cart-total'>Total: ${totalPrice}</div>
+                        <div className='qwerty-shop-cart-total'>Total: ${calcTotalPrice(cart)}</div>
                         <div className='qwerty-shop-cart-buttons-container'>
                             {
                                 cart && cart.length > 0 ? (

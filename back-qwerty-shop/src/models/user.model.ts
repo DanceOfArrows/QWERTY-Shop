@@ -1,6 +1,7 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
-import { Address } from './address.model'
+import { Address } from './address.model';
+import { CartItem } from './cart-item.model';
 
 @ObjectType()
 export class User {
@@ -9,10 +10,13 @@ export class User {
 
     @Field(() => String, { description: 'User email' })
     email!: string;
+};
 
+@ObjectType()
+export class FullUser extends User {
     @Field(() => [Address], { description: 'User addresses' })
     addresses: Address[];
 
-    @Field({ description: 'User cart with item(s)' })
-    cart: string;
-}
+    @Field(() => [CartItem], { description: 'User cart with item(s)' })
+    cart: CartItem[];
+};

@@ -23,7 +23,7 @@ const setupApollo = async () => {
         keyFields: () => 'token',
         merge: true,
       },
-      User: {
+      FullUser: {
         keyFields: () => 'userInfo',
         merge: true,
       },
@@ -49,8 +49,9 @@ const setupApollo = async () => {
         //   `[GraphQL error]: Message: ${message}`,
         // )
 
-        if (message === 'Invalid token' || message === 'Forbidden resource') {
+        if (message === 'Invalid token') {
           localStorage.removeItem('token');
+          window.dispatchEvent(new Event('storage'));
         }
       });
     }

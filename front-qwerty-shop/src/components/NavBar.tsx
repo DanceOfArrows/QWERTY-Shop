@@ -43,7 +43,7 @@ const NavBar: React.FC<NavBar> = (props: any) => {
             id: 'userInfo',
             fragment:
                 gql`
-                fragment UserInfo on User {
+                fragment UserInfo on FullUser {
                     id,
                     email,
               }
@@ -62,13 +62,15 @@ const NavBar: React.FC<NavBar> = (props: any) => {
 
         if (document.location.pathname === '/') document.addEventListener("scroll", handleScroll);
 
+        console.log(token)
+
         if (isCachedUser && isCachedUser.id && token) setLoggedIn(true);
         else setLoggedIn(false);
 
         return () => {
             if (document.location.pathname === '/') document.removeEventListener("scroll", handleScroll);
         };
-    }, [token]);
+    }, [token, setToken]);
 
     return (
         <header
@@ -194,7 +196,10 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                                                 { borderRadius: '12px 12px 0 0', borderTop: 'solid 2px #1C1C1D' } :
                                                 { borderRadius: '0' }
                                         }>
-                                            <NavLink to='/login'>Login</NavLink>
+                                            <NavLink to={{
+                                                pathname: '/login',
+                                                state: { from: props.location.pathname }
+                                            }}>Login</NavLink>
                                         </div>
                                         <div className='qwerty-shop-navbar-user-dropdown-option-0' style={
                                             { borderRadius: '0 0 12px 12px', borderBottom: 'solid 2px #1C1A23' }

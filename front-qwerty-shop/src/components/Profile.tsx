@@ -1,53 +1,21 @@
-import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 
 import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
-export const GET_USER_ORDERS = gql`
-  query getUserData {
-    getOrders {
-        address {
-            country,
-            fullName,
-            phoneNumber,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zipCode,
-            default
-        },
-        items {
-            itemId,
-            image,
-            color,
-            size,
-            quantity,
-            name,
-            price
-        },
-        saleDate
-    }
-  }
-`;
-
 const Profile = (props: any) => {
     document.title = 'QWERTY Shop - Profile';
     const tabToSet = props.location.state ? props.location.state.tab : null;
     const userInfo = props.checkCachedUser();
-    const addressesCopy = userInfo.addresses.slice();
+    const addressesCopy = userInfo.addresses && userInfo.addresses.length > 0 ? userInfo.addresses.slice() : [];
+    const orders = userInfo.orders && userInfo.orders.length > 0 ? userInfo.orders : [];
     const [currentProfileTab, setCurrentProfileTab] = useState(tabToSet ? tabToSet : 'orders');
     const [displayAddressIdx, setDisplayAddressIdx] = useState<null | number>(null);
 
-    const { loading, error, data } = useQuery(GET_USER_ORDERS, {
-        fetchPolicy: "network-only"
-    });
-
-    const orders = data && data.getOrders && data.getOrders.length > 0 ? data.getOrders : [];
     console.log(orders)
+    console.log(addressesCopy)
 
     const renderTab = (currentProfileTab: any) => {
         switch (currentProfileTab) {

@@ -27,13 +27,38 @@ const {
   Profile,
   SignUp
 } = Components;
-const { AuthRoute, ProtectedRoute } = AuthRoutes;
+const { AuthRouteWithRouter, ProtectedRouteWithRouter } = AuthRoutes;
 
 export const GET_USER_INFO = gql`
   query getUserData {
     getUserData {
       id,
       email,
+      addresses {
+          country,
+          full_name,
+          phone_number,
+          address_line_one,
+          address_line_two,
+          city,
+          state,
+          zip_code,
+          default
+      },
+      cart {
+          item {
+              id,
+              name,
+          },
+          item_variation {
+              id,
+              option,
+              variant,
+              price,
+              image
+          },
+          quantity
+      },
     }
   }
 `;
@@ -53,9 +78,38 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       id: 'userInfo',
       fragment:
         gql`
-        fragment UserInfo on User {
+        fragment UserInfo on FullUser {
             id,
             email,
+            addresses {
+              country,
+              full_name,
+              phone_number,
+              address_line_one,
+              address_line_two,
+              city,
+              state,
+              zip_code,
+              default
+            },
+            cart {
+              item {
+                  id,
+                  name,
+                  image,
+                  description,
+                  type
+              },
+              item_variation {
+                  id,
+                  option,
+                  variant,
+                  quantity,
+                  price,
+                  image
+              },
+              quantity
+            },            
         }
       `,
     });
@@ -64,32 +118,63 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   };
 
   useEffect(() => {
-    getUserInfo();
-  }, [token])
-
-  const localToken = localStorage.getItem('token');
-  if (localToken && localToken != '' && token === '') {
-    /* Verify user or grab user data */
-    if (!error && data) {
-      setToken(localToken);
-    }
-  } else if (!localToken && token === '') {
-    client.writeFragment({
-      id: 'userInfo',
-      fragment:
-        gql`
-            fragment UserInfo on User {
-                id,
-                email,
+    function removeToken() {
+      console.log(token)
+      if (token || token != '') {
+        setToken('');
+        client.writeFragment({
+          id: 'userInfo',
+          fragment:
+            gql`
+                  fragment UserInfo on FullUser {
+                      id,
+                      email,
+                      addresses {
+                        country,
+                        full_name,
+                        phone_number,
+                        address_line_one,
+                        address_line_two,
+                        city,
+                        state,
+                        zip_code,
+                        default
+                      },
+                      cart {
+                        item {
+                            id,
+                            name,
+                            image,
+                            description,
+                            type
+                        },
+                        item_variation {
+                            id,
+                            option,
+                            variant,
+                            quantity,
+                            price,
+                            image
+                        },
+                      quantity
+              },
+                }
+              `,
+          data: {
+            _id: null,
+            email: null,
+            addresses: [],
+            cart: [],
           }
-        `,
-      data: {
-        _id: null,
-        email: null,
-      }
-    });
-    localStorage.removeItem('token');
-  }
+        })
+
+        alert('Login session expired.')
+      };
+    }
+
+    window.addEventListener('storage', removeToken);
+    // return window.removeEventListener('storage', removeToken);
+  })
 
   return (
     <>
@@ -115,16 +200,18 @@ const App: React.FC<ApolloClientInterface> = (props) => {
           autoDismissTimeout={6000}
           placement='bottom-left'
         >
-          <NavBar checkCachedUser={checkCachedUser} client={client} setToken={setToken} token={token} />
+          <NavBar checkCachedUser={checkCachedUser} client={client} key={token} setToken={setToken} token={token} />
           <div className='qwerty-shop-app' style={document.location.pathname === '/' ? { marginTop: 0 } : undefined}>
             <AnimatePresence exitBeforeEnter={true} >
               <Switch location={location} key={location.pathname}>
                 <Route exact path='/' component={Home} />
-                <ProtectedRoute
+                <ProtectedRouteWithRouter
                   checkCachedUser={checkCachedUser}
                   exact path='/addaddress'
                   client={client}
                   component={AddAddress}
+                  getUserInfo={getUserInfo}
+                  loading={loading}
                   setToken={setToken}
                   token={token}
                 />
@@ -133,16 +220,46 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                 <Route
                   exact path='/item/:itemId'
                   render={(reactProps) => <Item {...reactProps} checkCachedUser={checkCachedUser} client={client} />} />
-                <AuthRoute checkCachedUser={checkCachedUser} exact path='/login' component={Login} setToken={setToken} token={token} />
-                <AuthRoute checkCachedUser={checkCachedUser} exact path='/signup' component={SignUp} setToken={setToken} token={token} />
-                <ProtectedRoute checkCachedUser={checkCachedUser} exact path='/profile' component={Profile} setToken={setToken} token={token} />
-                <ProtectedRoute exact path='/cart' component={Cart} checkCachedUser={checkCachedUser} client={client} token={token} />
-                <ProtectedRoute
+                <AuthRouteWithRouter
+                  checkCachedUser={checkCachedUser} exact path='/login'
+                  component={Login}
+                  getUserInfo={getUserInfo}
+                  loading={loading}
+                  setToken={setToken}
+                  token={token}
+                />
+                <AuthRouteWithRouter
+                  checkCachedUser={checkCachedUser}
+                  exact path='/signup'
+                  component={SignUp}
+                  getUserInfo={getUserInfo}
+                  loading={loading}
+                  setToken={setToken}
+                  token={token}
+                />
+                <ProtectedRouteWithRouter
+                  checkCachedUser={checkCachedUser}
+                  exact path='/profile'
+                  component={Profile}
+                  getUserInfo={getUserInfo}
+                  loading={loading} setToken={setToken} token={token} />
+                <ProtectedRouteWithRouter
+                  exact path='/cart'
+                  component={Cart}
+                  checkCachedUser={checkCachedUser}
+                  client={client}
+                  getUserInfo={getUserInfo}
+                  loading={loading}
+                  token={token}
+                />
+                <ProtectedRouteWithRouter
                   exact
                   path='/checkout'
                   component={Checkout}
                   checkCachedUser={checkCachedUser}
                   client={client}
+                  getUserInfo={getUserInfo}
+                  loading={loading}
                   token={token}
                 />
               </Switch>
@@ -155,6 +272,6 @@ const App: React.FC<ApolloClientInterface> = (props) => {
 
     </>
   );
-}
+};
 
 export default App;

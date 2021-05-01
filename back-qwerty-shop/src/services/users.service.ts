@@ -61,6 +61,7 @@ export class UsersService {
                     id: false,
                     item_variation: {
                         select: {
+                            id: true,
                             option: true,
                             variant: true,
                             quantity: true,
@@ -81,7 +82,16 @@ export class UsersService {
                 }
             });
 
-            console.log(cartItems)
+            const cartItemsFormatted = await Promise.all(cartItems.map((cartItem) => {
+                const { item, ...item_variation } = cartItem.item_variation;
+                const { type, ...itemInfo } = item;
+
+                return {
+                    item: { ...itemInfo, type: type.name },
+                    item_variation: { ...item_variation },
+                    quantity: cartItem.quantity
+                };
+            }));
 
             const userAddresses = await this.prisma.address.findMany({
                 where: {
@@ -102,10 +112,7 @@ export class UsersService {
                 }
             });
 
-            console.log(cartItems)
-            console.log(userAddresses)
-
-            return { addresses: userAddresses, cart: cartItems, ...userInfo };
+            return { addresses: userAddresses, cart: cartItemsFormatted, ...userInfo };
         }
 
     };
