@@ -853,8 +853,9 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
 .qwerty-shop-item-quantity-nav {
     float: left;
-    position: relative;
     height: 42px;
+    margin-right: auto;
+    position: relative;
 
     .qwerty-shop-item-quantity-button {
         position: relative;

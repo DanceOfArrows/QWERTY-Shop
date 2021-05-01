@@ -41,7 +41,7 @@ const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
         if (token && (!existingUser || !existingUser.id)) {
             getUserInfo();
         }
-    }, [token])
+    })
 
     if (!localToken && token != '') setToken('');
     if (error === 'Invalid token' || error === 'Forbidden resource') return (

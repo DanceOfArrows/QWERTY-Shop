@@ -18,7 +18,6 @@ export class CartsService {
             });
 
             /* Check if item already exists in cart */
-            console.log(variantId)
             const existingItem = await this.prisma.cartItem.findFirst({
                 where: {
                     cart_id: userCart.id,

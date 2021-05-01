@@ -117,64 +117,68 @@ const App: React.FC<ApolloClientInterface> = (props) => {
     return existingUser;
   };
 
+  const localToken = localStorage.getItem('token');
   useEffect(() => {
     function removeToken() {
-      console.log(token)
-      if (token || token != '') {
-        setToken('');
-        client.writeFragment({
-          id: 'userInfo',
-          fragment:
-            gql`
-                  fragment UserInfo on FullUser {
-                      id,
-                      email,
-                      addresses {
-                        country,
-                        full_name,
-                        phone_number,
-                        address_line_one,
-                        address_line_two,
-                        city,
-                        state,
-                        zip_code,
-                        default
+      setToken('');
+      client.writeFragment({
+        id: 'userInfo',
+        fragment:
+          gql`
+                fragment UserInfo on FullUser {
+                    id,
+                    email,
+                    addresses {
+                      country,
+                      full_name,
+                      phone_number,
+                      address_line_one,
+                      address_line_two,
+                      city,
+                      state,
+                      zip_code,
+                      default
+                    },
+                    cart {
+                      item {
+                          id,
+                          name,
+                          image,
+                          description,
+                          type
                       },
-                      cart {
-                        item {
-                            id,
-                            name,
-                            image,
-                            description,
-                            type
-                        },
-                        item_variation {
-                            id,
-                            option,
-                            variant,
-                            quantity,
-                            price,
-                            image
-                        },
-                      quantity
-              },
-                }
-              `,
-          data: {
-            _id: null,
-            email: null,
-            addresses: [],
-            cart: [],
-          }
-        })
+                      item_variation {
+                          id,
+                          option,
+                          variant,
+                          quantity,
+                          price,
+                          image
+                      },
+                    quantity
+            },
+              }
+            `,
+        data: {
+          _id: null,
+          email: null,
+          addresses: [],
+          cart: [],
+        }
+      })
 
-        alert('Login session expired.')
-      };
+      alert('Login session expired.');
     }
 
+    getUserInfo();
+
     window.addEventListener('storage', removeToken);
-    // return window.removeEventListener('storage', removeToken);
-  })
+    return () => window.removeEventListener('storage', removeToken);
+  }, [localToken, token]);
+
+  if (localToken && localToken != '' && token === '') {
+    if (!error && data) setToken(localToken);
+  }
 
   return (
     <>

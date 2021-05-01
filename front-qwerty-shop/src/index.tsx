@@ -10,10 +10,6 @@ import App from './App';
 import './index.scss';
 import './fonts/Lato-Regular.ttf';
 
-const getToken = () => {
-  return localStorage.getItem('token');
-};
-
 const setupApollo = async () => {
   const apiBaseUrl = process.env.NODE_ENV === "production" ? 'https://qwerty-shop-back.herokuapp.com' : 'http://localhost:8080';
   const cache = new InMemoryCache({
@@ -49,7 +45,7 @@ const setupApollo = async () => {
         //   `[GraphQL error]: Message: ${message}`,
         // )
 
-        if (message === 'Invalid token') {
+        if (message === 'Invalid token' || message === 'Missing token') {
           localStorage.removeItem('token');
           window.dispatchEvent(new Event('storage'));
         }
@@ -66,10 +62,12 @@ const setupApollo = async () => {
   });
 
   const authLink = setContext((_, { headers }) => {
+    const token = localStorage.getItem('token');
+
     return {
       headers: {
         ...headers,
-        authorization: getToken() ? `Bearer ${getToken()}` : "",
+        authorization: token ? `Bearer ${token}` : "",
       }
     }
   });

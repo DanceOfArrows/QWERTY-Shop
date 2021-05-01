@@ -50,7 +50,7 @@ const Item = (props: any) => {
         variables: { itemId: itemIdNum }
     });
 
-    const [addItemToCart] = useMutation(ADD_ITEM_TO_CART, {
+    const [addItemToCart, { loading: addItemLoading }] = useMutation(ADD_ITEM_TO_CART, {
         update(_) {
             removeAllToasts();
             addToast('Successfully added item to cart.', {
@@ -264,7 +264,10 @@ const Item = (props: any) => {
                                             <div className='qwerty-shop-item-label'>Description: </div>
                                             <div className='qwerty-shop-item-description'>{getItemRes.item.description}</div>
                                         </div>
-                                        <div className='qwerty-shop-item-section-container qwerty-shop-item-quantity-container'>
+                                        <div
+                                            className='qwerty-shop-item-section-container qwerty-shop-item-quantity-container'
+                                            style={addItemLoading ? { width: '170px' } : {}}
+                                        >
                                             <input
                                                 type='number'
                                                 className='qwerty-shop-item-quantity-input'
@@ -285,11 +288,15 @@ const Item = (props: any) => {
                                                 >-</div>
                                             </div>
                                             {
-                                                token ? (
-                                                    <div className='qwerty-shop-item-addToCart' onClick={addToCart}>Add to Cart</div>
-                                                ) : (
-                                                    <div className='qwerty-shop-item-addToCart-noToken'>Sign in to add to cart!</div>
-                                                )
+                                                token ?
+                                                    addItemLoading ? (
+                                                        <LoadingSpinner />
+                                                    ) : (
+                                                        <div className='qwerty-shop-item-addToCart' onClick={addToCart}>Add to Cart</div>
+                                                    )
+                                                    : (
+                                                        <div className='qwerty-shop-item-addToCart-noToken'>Sign in to add to cart!</div>
+                                                    )
                                             }
                                         </div>
                                     </div>
