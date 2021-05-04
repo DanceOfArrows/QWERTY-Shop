@@ -977,7 +977,8 @@ $productDivs: 0, 1, 2, 3, 4, 5;
             justify-content:stretch;
             max-height: 700px;
             overflow: auto;
-            width: 100%;
+            padding: 8px;
+            width: calc(100% - 16px);
         }
 
         .qwerty-shop-profile-addresses-add {

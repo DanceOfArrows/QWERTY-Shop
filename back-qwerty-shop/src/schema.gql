@@ -15,7 +15,7 @@ type Address {
   address_line_two: String!
   city: String!
   country: String!
-  default: String!
+  default: Boolean!
   full_name: String!
   phone_number: String!
   state: String!

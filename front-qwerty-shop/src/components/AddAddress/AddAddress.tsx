@@ -20,7 +20,6 @@ const AddAddress = (props: any) => {
     document.title = 'QWERTY Shop - Login'
     let testLoading = false;
     const { register, handleSubmit } = useForm();
-    const { error, setError } = props;
     const { addToast, removeAllToasts } = useToasts();
     const [country, setCountry] = useState('United States of America');
     const [state, setState] = useState('');
@@ -29,7 +28,7 @@ const AddAddress = (props: any) => {
         update(_, data) {
             removeAllToasts();
             addToast(data.data.addAddress, {
-                appearance: 'error',
+                appearance: 'success',
                 autoDismiss: true,
             })
 
@@ -40,11 +39,13 @@ const AddAddress = (props: any) => {
         },
     });
     const submitNewAddress = (addressInfo: Object) => {
-        setError('');
         removeAllToasts();
 
         const fullAddressInfo = { ...addressInfo, country, state }
-        addAddress({ variables: { addressInfo: fullAddressInfo } }).catch(e => setError(e.message));
+        addAddress({ variables: { addressInfo: fullAddressInfo } }).catch(e => addToast(e.message, {
+            appearance: 'error',
+            autoDismiss: true,
+        }));
     };
 
     return (
@@ -66,7 +67,7 @@ const AddAddress = (props: any) => {
                 >
                     {'<'} Back to Profile
             </NavLink>
-                <div className='qwerty-shop-address' style={error ? { height: '960px' } : {}}>
+                <div className='qwerty-shop-address'>
                     <h1>Add Address</h1>
                     <form onSubmit={handleSubmit(submitNewAddress)}>
                         <label htmlFor='qwerty-shop-address-country'>Country</label>
@@ -136,11 +137,6 @@ const AddAddress = (props: any) => {
                             )
                         }
                     </form>
-                    {
-                        error.length > 0 ?
-                            <p className='qwerty-shop-login-error'>{error}</p>
-                            : null
-                    }
                 </div>
             </div >
         </motion.div >

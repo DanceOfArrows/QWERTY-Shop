@@ -28,7 +28,6 @@ const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
         setToken,
         token
     } = props;
-    const [error, setError] = useState('');
     const client = props.client ? props.client : null;
     const existingUser = checkCachedUser();
     const localToken = localStorage.getItem('token');
@@ -38,15 +37,10 @@ const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
     // });
 
     useEffect(() => {
-        if (token && (!existingUser || !existingUser.id)) {
-            getUserInfo();
-        }
-    })
+        getUserInfo();
+    }, [])
 
     if (!localToken && token != '') setToken('');
-    if (error === 'Invalid token' || error === 'Forbidden resource') return (
-        <Redirect to='/login' />
-    );
 
     return (
         <Route
@@ -58,9 +52,8 @@ const ProtectedRoute: React.FC<AuthCheck> = (props: any) => {
                         {...reactProps}
                         checkCachedUser={checkCachedUser}
                         client={client}
-                        error={error}
                         getUserInfo={getUserInfo}
-                        setError={setError} /> :
+                    /> :
                     <Redirect to={{
                         pathname: '/login',
                         state: { from: props.location.pathname }
@@ -87,13 +80,11 @@ const AuthRoute: React.FC<AuthCheck> = (props: any) => {
         props.location.state && props.location.state.from != '/login' && props.location.state.from != '/signup' ?
             props.location.state.from :
             '/';
-    // const [getUserInfo, { called, loading, data }] = useLazyQuery(GET_USER_INFO, {
-    //     fetchPolicy: 'network-only',
-    //     nextFetchPolicy: 'network-only'
-    // });
 
     useEffect(() => {
+
         if (token && (!existingUser || !existingUser.id)) {
+            console.log('in')
             getUserInfo();
         }
     }, [token])

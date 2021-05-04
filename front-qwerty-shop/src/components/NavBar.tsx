@@ -58,13 +58,8 @@ const NavBar: React.FC<NavBar> = (props: any) => {
     }
 
     useEffect(() => {
-        const isCachedUser = checkCachedUser();
-
         if (document.location.pathname === '/') document.addEventListener("scroll", handleScroll);
-
-        console.log(token)
-
-        if (isCachedUser && isCachedUser.id && token) setLoggedIn(true);
+        if (token) setLoggedIn(true);
         else setLoggedIn(false);
 
         return () => {

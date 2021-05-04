@@ -26,6 +26,6 @@ export class Address {
     @Field(() => String, { nullable: false })
     zip_code!: string;
 
-    @Field(() => String, { nullable: false })
-    default!: string;
+    @Field(() => Boolean, { nullable: false })
+    default!: boolean;
 }

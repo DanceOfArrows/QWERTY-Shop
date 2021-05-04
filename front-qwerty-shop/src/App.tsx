@@ -10,7 +10,6 @@ import { ToastProvider } from 'react-toast-notifications';
 
 import * as Components from './components/exportComponents';
 import { ApolloClientInterface } from './components/exportInterfaces';
-import LoadingSpinner from './components/LoadingSpinner';
 
 const {
   AddAddress,
@@ -67,7 +66,6 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   const { client } = props;
   const [token, setToken] = useState('');
   const location = useLocation();
-  const loadingText = 'Checking user info!'.split('');
   const [getUserInfo, { data, error, loading }] = useLazyQuery(GET_USER_INFO, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'network-only'
@@ -186,98 +184,78 @@ const App: React.FC<ApolloClientInterface> = (props) => {
 
   return (
     <>
-      { loading ? (
-        <div className='qwerty-shop-loading-full'>
-          <LoadingSpinner />
-          <div className='qwerty-shop-loading-text-container'>
-            {
-              loadingText.map((char, idx) => (
-                <div
-                  className={`qwerty-shop-loading-text-${idx}`}
-                  key={`qwerty-shop-loading-text-${idx}`}
-                >
-                  {char}
-                </div>
-              ))
-            }
-          </div>
+      <ToastProvider
+        autoDismiss
+        autoDismissTimeout={6000}
+        placement='bottom-left'
+      >
+        <NavBar checkCachedUser={checkCachedUser} client={client} key={token} setToken={setToken} token={token} />
+        <div className='qwerty-shop-app' style={document.location.pathname === '/' ? { marginTop: 0 } : undefined}>
+          <AnimatePresence exitBeforeEnter={true} >
+            <Switch location={location} key={location.pathname}>
+              <Route exact path='/' component={Home} />
+              <ProtectedRouteWithRouter
+                checkCachedUser={checkCachedUser}
+                exact path='/addaddress'
+                client={client}
+                component={AddAddress}
+                getUserInfo={getUserInfo}
+                loading={loading}
+                setToken={setToken}
+                token={token}
+              />
+              <Route exact path='/products' component={ProductCategories} />
+              <Route exact path='/products/:productType' component={Product} />
+              <Route
+                exact path='/item/:itemId'
+                render={(reactProps) => <Item {...reactProps} checkCachedUser={checkCachedUser} client={client} />} />
+              <AuthRouteWithRouter
+                checkCachedUser={checkCachedUser} exact path='/login'
+                component={Login}
+                getUserInfo={getUserInfo}
+                loading={loading}
+                setToken={setToken}
+                token={token}
+              />
+              <AuthRouteWithRouter
+                checkCachedUser={checkCachedUser}
+                exact path='/signup'
+                component={SignUp}
+                getUserInfo={getUserInfo}
+                loading={loading}
+                setToken={setToken}
+                token={token}
+              />
+              <ProtectedRouteWithRouter
+                checkCachedUser={checkCachedUser}
+                exact path='/profile'
+                component={Profile}
+                getUserInfo={getUserInfo}
+                loading={loading} setToken={setToken} token={token} />
+              <ProtectedRouteWithRouter
+                exact path='/cart'
+                component={Cart}
+                checkCachedUser={checkCachedUser}
+                client={client}
+                getUserInfo={getUserInfo}
+                loading={loading}
+                token={token}
+              />
+              <ProtectedRouteWithRouter
+                exact
+                path='/checkout'
+                component={Checkout}
+                checkCachedUser={checkCachedUser}
+                client={client}
+                getUserInfo={getUserInfo}
+                loading={loading}
+                token={token}
+              />
+            </Switch>
+          </AnimatePresence>
         </div>
-      ) : (
-        <ToastProvider
-          autoDismiss
-          autoDismissTimeout={6000}
-          placement='bottom-left'
-        >
-          <NavBar checkCachedUser={checkCachedUser} client={client} key={token} setToken={setToken} token={token} />
-          <div className='qwerty-shop-app' style={document.location.pathname === '/' ? { marginTop: 0 } : undefined}>
-            <AnimatePresence exitBeforeEnter={true} >
-              <Switch location={location} key={location.pathname}>
-                <Route exact path='/' component={Home} />
-                <ProtectedRouteWithRouter
-                  checkCachedUser={checkCachedUser}
-                  exact path='/addaddress'
-                  client={client}
-                  component={AddAddress}
-                  getUserInfo={getUserInfo}
-                  loading={loading}
-                  setToken={setToken}
-                  token={token}
-                />
-                <Route exact path='/products' component={ProductCategories} />
-                <Route exact path='/products/:productType' component={Product} />
-                <Route
-                  exact path='/item/:itemId'
-                  render={(reactProps) => <Item {...reactProps} checkCachedUser={checkCachedUser} client={client} />} />
-                <AuthRouteWithRouter
-                  checkCachedUser={checkCachedUser} exact path='/login'
-                  component={Login}
-                  getUserInfo={getUserInfo}
-                  loading={loading}
-                  setToken={setToken}
-                  token={token}
-                />
-                <AuthRouteWithRouter
-                  checkCachedUser={checkCachedUser}
-                  exact path='/signup'
-                  component={SignUp}
-                  getUserInfo={getUserInfo}
-                  loading={loading}
-                  setToken={setToken}
-                  token={token}
-                />
-                <ProtectedRouteWithRouter
-                  checkCachedUser={checkCachedUser}
-                  exact path='/profile'
-                  component={Profile}
-                  getUserInfo={getUserInfo}
-                  loading={loading} setToken={setToken} token={token} />
-                <ProtectedRouteWithRouter
-                  exact path='/cart'
-                  component={Cart}
-                  checkCachedUser={checkCachedUser}
-                  client={client}
-                  getUserInfo={getUserInfo}
-                  loading={loading}
-                  token={token}
-                />
-                <ProtectedRouteWithRouter
-                  exact
-                  path='/checkout'
-                  component={Checkout}
-                  checkCachedUser={checkCachedUser}
-                  client={client}
-                  getUserInfo={getUserInfo}
-                  loading={loading}
-                  token={token}
-                />
-              </Switch>
-            </AnimatePresence>
-          </div>
-          <Footer />
-        </ToastProvider>
-      )
-      }
-
+        <Footer />
+      </ToastProvider>
     </>
   );
 };

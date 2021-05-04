@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { NavLink } from 'react-router-dom';
 
 import { pageVariants } from './Home';
-import LoadingSpinner from './LoadingSpinner';
 
 const Profile = (props: any) => {
     document.title = 'QWERTY Shop - Profile';
@@ -13,9 +12,6 @@ const Profile = (props: any) => {
     const orders = userInfo.orders && userInfo.orders.length > 0 ? userInfo.orders : [];
     const [currentProfileTab, setCurrentProfileTab] = useState(tabToSet ? tabToSet : 'orders');
     const [displayAddressIdx, setDisplayAddressIdx] = useState<null | number>(null);
-
-    console.log(orders)
-    console.log(addressesCopy)
 
     const renderTab = (currentProfileTab: any) => {
         switch (currentProfileTab) {
@@ -163,13 +159,29 @@ const Profile = (props: any) => {
                                     if (idx != 0 && idx % 5 === 0) return null;
 
                                     return (
-                                        <div key={`qwerty-shop-address-${idx}`} className='qwerty-shop-address-item'>
+                                        <div
+                                            key={`qwerty-shop-address-${idx}`}
+                                            className='qwerty-shop-address-item'
+                                            style={idx === 0 ? {
+                                                borderImageSlice: 1,
+                                                borderImageSource: 'linear-gradient(to right, #880383, #21BFFE)'
+                                            } : {}}
+                                        >
                                             <div className='qwerty-shop-address-full_name'>{full_name}</div>
                                             <div>{address_line_one}</div>
                                             { address_line_two.length > 0 ? <div>{address_line_two}</div> : null}
                                             <div>{city}, {state} {zip_code}</div>
                                             <div>{country}</div>
                                             <div>Phone Number: {phone_number}</div>
+                                            {
+                                                idx === 0 ? (
+                                                    <div style={{
+                                                        alignSelf: 'center',
+                                                        margin: 'auto 0 24px 0',
+                                                        padding: 0
+                                                    }}>Default</div>
+                                                ) : null
+                                            }
                                         </div>
                                     )
                                 })
