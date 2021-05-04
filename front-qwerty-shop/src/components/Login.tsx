@@ -1,7 +1,7 @@
 import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
-import { useToasts } from 'react-toast-notifications'
+import { useToasts } from 'react-toast-notifications';
 
 import LoadingSpinner from './LoadingSpinner';
 

@@ -70,6 +70,10 @@ input[type=number]
   -moz-appearance: textfield;
 }
 
+.select__input {
+    color: transparent;
+}
+
 /* Component Body Styles */
 .qwerty-shop-app {
     flex: 1 1 auto;
@@ -404,6 +408,11 @@ $productDivs: 0, 1, 2, 3, 4, 5;
             cursor: pointer;
             letter-spacing: 1px;
             width: 100%;
+        }
+
+        .qwerty-shop-select {
+            color: black;
+            margin-bottom: 24px;
         }
 
         .qwerty-shop-login-loading {

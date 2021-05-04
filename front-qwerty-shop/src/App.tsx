@@ -120,11 +120,14 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   const localToken = localStorage.getItem('token');
   useEffect(() => {
     function removeToken() {
-      setToken('');
-      client.writeFragment({
-        id: 'userInfo',
-        fragment:
-          gql`
+      if (data && !error) {
+        return;
+      } else {
+        setToken('');
+        client.writeFragment({
+          id: 'userInfo',
+          fragment:
+            gql`
                 fragment UserInfo on FullUser {
                     id,
                     email,
@@ -159,15 +162,16 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             },
               }
             `,
-        data: {
-          _id: null,
-          email: null,
-          addresses: [],
-          cart: [],
-        }
-      })
+          data: {
+            _id: null,
+            email: null,
+            addresses: [],
+            cart: [],
+          }
+        })
 
-      alert('Login session expired.');
+        alert('Login session expired.');
+      }
     }
 
     getUserInfo();

@@ -29,14 +29,14 @@ const Profile = (props: any) => {
                                     orders.map((order: any, idx: number) => {
                                         const { address, items, saleDate } = order;
                                         const {
-                                            addressLineOne,
-                                            addressLineTwo,
+                                            address_line_one,
+                                            address_line_two,
                                             city,
                                             country,
-                                            fullName,
-                                            phoneNumber,
+                                            full_name,
+                                            phone_number,
                                             state,
-                                            zipCode,
+                                            zip_code,
                                         } = address;
 
                                         const months = [
@@ -79,17 +79,17 @@ const Profile = (props: any) => {
                                                                 className='qwerty-shop-profile-order-address-name'
                                                                 onMouseOver={() => setDisplayAddressIdx(idx)}
                                                                 onMouseLeave={() => setDisplayAddressIdx(null)}
-                                                            >{fullName}</div>
+                                                            >{full_name}</div>
                                                             <div
                                                                 className='qwerty-shop-profile-order-address'
                                                                 style={displayAddressIdx != idx ? { opacity: 0 } : { opacity: 1 }}
                                                             >
-                                                                <div className='qwerty-shop-address-fullName'>{fullName}</div>
-                                                                <div>{addressLineOne}</div>
-                                                                {addressLineTwo.length > 0 ? <div>{addressLineTwo}</div> : null}
-                                                                <div>{city}, {state} {zipCode}</div>
+                                                                <div className='qwerty-shop-address-full_name'>{full_name}</div>
+                                                                <div>{address_line_one}</div>
+                                                                {address_line_two.length > 0 ? <div>{address_line_two}</div> : null}
+                                                                <div>{city}, {state} {zip_code}</div>
                                                                 <div>{country}</div>
-                                                                <div>Phone Number: {phoneNumber}</div>
+                                                                <div>Phone Number: {phone_number}</div>
                                                             </div>
                                                             <div className="fas fa-angle-down" style={{ marginLeft: '6px' }} />
                                                         </div>
@@ -150,26 +150,26 @@ const Profile = (props: any) => {
                                     return bVal - aVal;
                                 }).map((address: any, idx: number) => {
                                     const {
-                                        addressLineOne,
-                                        addressLineTwo,
+                                        address_line_one,
+                                        address_line_two,
                                         city,
                                         country,
-                                        fullName,
-                                        phoneNumber,
+                                        full_name,
+                                        phone_number,
                                         state,
-                                        zipCode,
+                                        zip_code,
                                     } = address;
 
                                     if (idx != 0 && idx % 5 === 0) return null;
 
                                     return (
                                         <div key={`qwerty-shop-address-${idx}`} className='qwerty-shop-address-item'>
-                                            <div className='qwerty-shop-address-fullName'>{fullName}</div>
-                                            <div>{addressLineOne}</div>
-                                            { addressLineTwo.length > 0 ? <div>{addressLineTwo}</div> : null}
-                                            <div>{city}, {state} {zipCode}</div>
+                                            <div className='qwerty-shop-address-full_name'>{full_name}</div>
+                                            <div>{address_line_one}</div>
+                                            { address_line_two.length > 0 ? <div>{address_line_two}</div> : null}
+                                            <div>{city}, {state} {zip_code}</div>
                                             <div>{country}</div>
-                                            <div>Phone Number: {phoneNumber}</div>
+                                            <div>Phone Number: {phone_number}</div>
                                         </div>
                                     )
                                 })

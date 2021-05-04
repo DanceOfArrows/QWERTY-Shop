@@ -22,6 +22,18 @@ type Address {
   zip_code: String!
 }
 
+input AddressInfoInput {
+  address_line_one: String!
+  address_line_two: String!
+  city: String!
+  country: String!
+  default: Boolean!
+  full_name: String!
+  phone_number: String!
+  state: String!
+  zip_code: String!
+}
+
 type AuthToken {
   """JWT access token"""
   token: String!
@@ -83,6 +95,7 @@ input LoginInput {
 }
 
 type Mutation {
+  addAddress(addressInfo: AddressInfoInput!): String!
   addToCart(itemInfo: AddItemToCartInput!): String!
   emptyCart: String!
   login(loginData: LoginInput!): AuthToken!

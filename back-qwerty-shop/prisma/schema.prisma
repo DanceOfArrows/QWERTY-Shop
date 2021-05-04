@@ -78,16 +78,16 @@ model LineItem {
 }
 
 model Address {
-  id               Int    @id @default(autoincrement())
-  country          String @db.VarChar
-  full_name        String @db.VarChar
-  phone_number     String @db.VarChar
-  address_line_one String @db.VarChar
-  address_line_two String @db.VarChar
-  city             String @db.VarChar
-  state            String @db.VarChar
-  zip_code         String @db.VarChar
-  default          String @db.VarChar
+  id               Int     @id @default(autoincrement())
+  country          String  @db.VarChar
+  full_name        String  @db.VarChar
+  phone_number     String  @db.VarChar
+  address_line_one String  @db.VarChar
+  address_line_two String  @db.VarChar
+  city             String  @db.VarChar
+  state            String  @db.VarChar
+  zip_code         String  @db.VarChar
+  default          Boolean @db.Boolean
   user_id          Int
-  user             User   @relation(fields: [user_id], references: [id])
+  user             User    @relation(fields: [user_id], references: [id])
 }

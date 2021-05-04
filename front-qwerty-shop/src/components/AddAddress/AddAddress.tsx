@@ -1,27 +1,18 @@
-import React from 'react';
+import { useState } from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { NavLink } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications'
+import Select from 'react-select';
 
-import { pageVariants } from './Home';
-import LoadingSpinner from './LoadingSpinner';
+import { pageVariants } from '../Home';
+import { countries, states, selectStyles } from './select-vars';
+import LoadingSpinner from '../LoadingSpinner';
 
 const ADD_ADDRESS = gql`
-  mutation addAddress($AddAddressInput: AddAddressInput!) {
-    addAddress(addAddressData: $AddAddressInput) {
-        addresses {
-            country,
-            fullName,
-            phoneNumber,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zipCode,
-            default
-        },
-    }
+  mutation addAddress($addressInfo: AddressInfoInput!) {
+    addAddress(addressInfo: $addressInfo)
   }
 `;
 
@@ -30,22 +21,17 @@ const AddAddress = (props: any) => {
     let testLoading = false;
     const { register, handleSubmit } = useForm();
     const { error, setError } = props;
+    const { addToast, removeAllToasts } = useToasts();
+    const [country, setCountry] = useState('United States of America');
+    const [state, setState] = useState('');
 
     const [addAddress, loading] = useMutation(ADD_ADDRESS, {
         update(_, data) {
-            props.client.writeFragment({
-                id: 'userInfo',
-                fragment:
-                    gql`
-                    fragment UserInfo on FullUser {
-                        id,
-                        email,
-                  }
-                `,
-                data: {
-                    addresses: data.data.addAddress.addresses,
-                }
-            });
+            removeAllToasts();
+            addToast(data.data.addAddress, {
+                appearance: 'error',
+                autoDismiss: true,
+            })
 
             props.history.push({
                 pathname: '/profile',
@@ -55,7 +41,10 @@ const AddAddress = (props: any) => {
     });
     const submitNewAddress = (addressInfo: Object) => {
         setError('');
-        addAddress({ variables: { AddAddressInput: addressInfo } }).catch(e => setError(e.message));
+        removeAllToasts();
+
+        const fullAddressInfo = { ...addressInfo, country, state }
+        addAddress({ variables: { addressInfo: fullAddressInfo } }).catch(e => setError(e.message));
     };
 
     return (
@@ -81,30 +70,56 @@ const AddAddress = (props: any) => {
                     <h1>Add Address</h1>
                     <form onSubmit={handleSubmit(submitNewAddress)}>
                         <label htmlFor='qwerty-shop-address-country'>Country</label>
-                        <input type='text' name='country' id='qwerty-shop-login-country' ref={register} />
+                        <Select
+                            className='qwerty-shop-select'
+                            classNamePrefix="select"
+                            id='qwerty-shop-login-country'
+                            name='country'
+                            onChange={(option) => setCountry(option!.value)}
+                            options={countries}
+                            ref={register}
+                            styles={selectStyles}
+                            value={countries.filter(({ value }) => country === value)}
+                        />
 
                         <label htmlFor='qwerty-shop-address-fullName'>Full Name</label>
-                        <input type='text' name='fullName' id='qwerty-shop-address-fullName' ref={register} />
+                        <input type='text' name='full_name' id='qwerty-shop-address-fullName' ref={register} />
 
                         <label htmlFor='qwerty-shop-address-phoneNumber'>Phone Number</label>
-                        <input type='text' name='phoneNumber' id='qwerty-shop-address-phoneNumber' ref={register} />
+                        <input type='text' name='phone_number' id='qwerty-shop-address-phoneNumber' ref={register} />
 
                         <label htmlFor='qwerty-shop-address-addressLineOne'>Address Line One</label>
-                        <input type='text' name='addressLineOne' id='qwerty-shop-address-addressLineOne' ref={register} />
+                        <input type='text' name='address_line_one' id='qwerty-shop-address-addressLineOne' ref={register} />
 
                         <label htmlFor='qwerty-shop-address-addressLineTwo'>Address Line Two</label>
-                        <input type='text' name='addressLineTwo' id='qwerty-shop-address-addressLineTwo' ref={register} />
+                        <input type='text' name='address_line_two' id='qwerty-shop-address-addressLineTwo' ref={register} />
 
                         <label htmlFor='qwerty-shop-address-city'>City</label>
                         <input type='text' name='city' id='qwerty-shop-address-city' ref={register} />
 
                         <label htmlFor='qwerty-shop-address-state'>State</label>
-                        <input type='text' name='state' id='qwerty-shop-address-state' ref={register} />
+                        {
+                            country === 'United States of America' ? (
+                                <Select
+                                    className='qwerty-shop-select'
+                                    classNamePrefix="select"
+                                    id='qwerty-shop-login-country'
+                                    name='country'
+                                    onChange={(option) => setState(option!.value)}
+                                    options={states}
+                                    ref={register}
+                                    styles={selectStyles}
+                                    value={states.filter(({ value }) => state === value)}
+                                />
+                            ) : (
+                                <input type='text' name='state' id='qwerty-shop-address-state' ref={register} />
+                            )
+                        }
 
                         <label htmlFor='qwerty-shop-address-zipCode'>Zip Code</label>
-                        <input type='text' name='zipCode' id='qwerty-shop-address-zipCode' ref={register} />
+                        <input type='text' name='zip_code' id='qwerty-shop-address-zipCode' ref={register} />
 
-                        <label htmlFor='qwerty-shop-address-default' style={{ alignSelf: 'center' }}>Make Default</label>
+                        <label htmlFor='qwerty-shop-address-default' style={{ alignSelf: 'center' }}>Make Default?</label>
                         <input type='checkbox' name='default' id='qwerty-shop-address-default' ref={register} />
 
                         {

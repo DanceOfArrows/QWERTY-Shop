@@ -5,10 +5,11 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { join } from 'path';
 
 import { AppController } from './controllers/app.controller';
+import { AddressesService } from './services/addresses.service';
 import * as Modules from './modules/exportModules';
 import * as Services from './services/exportServices';
 
-const { AuthModule, CartsModule, ItemsModule, UsersModule } = Modules;
+const { AddressesModule, AuthModule, CartsModule, ItemsModule, UsersModule } = Modules;
 const {
   AppService,
   CartsService,
@@ -40,6 +41,7 @@ const {
     CartsModule,
     ItemsModule,
     UsersModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [
@@ -47,7 +49,8 @@ const {
     CartsService,
     ItemsService,
     PrismaService,
-    UsersService
+    UsersService,
+    AddressesService
   ],
 })
 export class AppModule { }

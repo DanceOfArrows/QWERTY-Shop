@@ -1,4 +1,4 @@
-import AddAddress from './AddAddress';
+import AddAddress from './AddAddress/AddAddress';
 import * as AuthRoutes from './AuthCheck';
 import Cart from './Cart';
 import Checkout from './Checkout';

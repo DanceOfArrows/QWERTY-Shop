@@ -33,8 +33,12 @@ const SignUp = (props: any) => {
     };
 
     const [signup, loading] = useMutation(SIGN_UP, {
-        update() {
+        update(_, data) {
             removeAllToasts();
+            addToast(data.data.register, {
+                appearance: 'success',
+                autoDismiss: true,
+            });
             props.history.push('/');
         },
     });

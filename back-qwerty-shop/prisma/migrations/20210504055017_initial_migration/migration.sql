@@ -86,7 +86,7 @@ CREATE TABLE "Address" (
     "city" VARCHAR NOT NULL,
     "state" VARCHAR NOT NULL,
     "zip_code" VARCHAR NOT NULL,
-    "default" VARCHAR NOT NULL,
+    "default" BOOLEAN NOT NULL,
     "user_id" INTEGER NOT NULL,
 
     PRIMARY KEY ("id")

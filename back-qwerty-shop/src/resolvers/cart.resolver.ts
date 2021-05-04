@@ -2,7 +2,6 @@ import {
     Args,
     Context,
     Mutation,
-    Query,
     Resolver,
 } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
