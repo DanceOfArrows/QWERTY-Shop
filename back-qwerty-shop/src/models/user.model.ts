@@ -2,6 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { Address } from './address.model';
 import { CartItem } from './cart-item.model';
+import { Order } from './checkout.model';
 
 @ObjectType()
 export class User {
@@ -19,4 +20,7 @@ export class FullUser extends User {
 
     @Field(() => [CartItem], { description: 'User cart with item(s)' })
     cart: CartItem[];
+
+    @Field(() => [Order], { description: 'User orders' })
+    orders: Order[];
 };

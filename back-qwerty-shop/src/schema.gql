@@ -17,6 +17,7 @@ type Address {
   country: String!
   default: Boolean!
   full_name: String!
+  id: Int!
   phone_number: String!
   state: String!
   zip_code: String!
@@ -50,6 +51,24 @@ type CartItem {
   quantity: Int!
 }
 
+input CartItemInput {
+  """variantId to be added to cart"""
+  item_variation_id: Int!
+
+  """Amount to be added to cart"""
+  quantity: Int!
+}
+
+input CheckoutCartInput {
+  """Cart input for checkout"""
+  cart: [CartItemInput!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type FullUser {
   """User addresses"""
   addresses: [Address!]!
@@ -62,6 +81,9 @@ type FullUser {
 
   """User Id in PostgreSQL"""
   id: Int!
+
+  """User orders"""
+  orders: [Order!]!
 }
 
 type Item {
@@ -97,6 +119,7 @@ input LoginInput {
 type Mutation {
   addAddress(addressInfo: AddressInfoInput!): String!
   addToCart(itemInfo: AddItemToCartInput!): String!
+  checkout(addressId: Float!, cart: CheckoutCartInput!): String!
   emptyCart: String!
   login(loginData: LoginInput!): AuthToken!
   register(newUserData: NewUserInput!): String!
@@ -105,6 +128,17 @@ type Mutation {
 input NewUserInput {
   email: String!
   password: String!
+}
+
+type Order {
+  """Order address"""
+  address: Address!
+
+  """Order items"""
+  items: [CartItem!]!
+
+  """Order date"""
+  order_date: DateTime!
 }
 
 type Query {

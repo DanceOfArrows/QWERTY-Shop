@@ -9,10 +9,18 @@ import { AddressesService } from './services/addresses.service';
 import * as Modules from './modules/exportModules';
 import * as Services from './services/exportServices';
 
-const { AddressesModule, AuthModule, CartsModule, ItemsModule, UsersModule } = Modules;
+const {
+  AddressesModule,
+  AuthModule,
+  CartsModule,
+  CheckoutModule,
+  ItemsModule,
+  UsersModule
+} = Modules;
 const {
   AppService,
   CartsService,
+  CheckoutService,
   ItemsService,
   PrismaService,
   UsersService
@@ -42,6 +50,7 @@ const {
     ItemsModule,
     UsersModule,
     AddressesModule,
+    CheckoutModule,
   ],
   controllers: [AppController],
   providers: [
@@ -50,7 +59,8 @@ const {
     ItemsService,
     PrismaService,
     UsersService,
-    AddressesService
+    AddressesService,
+    CheckoutService
   ],
 })
 export class AppModule { }

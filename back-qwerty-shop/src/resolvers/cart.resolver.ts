@@ -9,10 +9,9 @@ import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from "./auth.gaurd";
 import { CartsService } from '../services/carts.service';
 import { AddItemToCartInput } from '../inputs/cart.inputs';
-import { Cart } from '../models/cart.model';
 import { User } from '../models/user.model';
 
-@Resolver(() => Cart)
+@Resolver(() => String)
 export class CartResolver {
     constructor(
         private cartsService: CartsService

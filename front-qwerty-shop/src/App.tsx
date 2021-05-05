@@ -34,6 +34,7 @@ export const GET_USER_INFO = gql`
       id,
       email,
       addresses {
+          id,
           country,
           full_name,
           phone_number,
@@ -58,6 +59,39 @@ export const GET_USER_INFO = gql`
           },
           quantity
       },
+      orders {
+        address {
+          id,
+          country,
+          full_name,
+          phone_number,
+          address_line_one,
+          address_line_two,
+          city,
+          state,
+          zip_code,
+          default
+        },
+        items {
+          item {
+            id,
+            name,
+            image,
+            description,
+            type
+          },
+          item_variation {
+            id,
+            option,
+            variant,
+            quantity,
+            price,
+            image
+          },
+          quantity
+        },
+        order_date
+      }
     }
   }
 `;
@@ -80,6 +114,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             id,
             email,
             addresses {
+              id,
               country,
               full_name,
               phone_number,
@@ -107,7 +142,40 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                   image
               },
               quantity
-            },            
+            },
+            orders {
+              address {
+                id,
+                country,
+                full_name,
+                phone_number,
+                address_line_one,
+                address_line_two,
+                city,
+                state,
+                zip_code,
+                default
+              },
+              items {
+                item {
+                  id,
+                  name,
+                  image,
+                  description,
+                  type
+                },
+                item_variation {
+                  id,
+                  option,
+                  variant,
+                  quantity,
+                  price,
+                  image
+                },
+                quantity
+              },
+              order_date
+            }
         }
       `,
     });
@@ -130,6 +198,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                     id,
                     email,
                     addresses {
+                      id,
                       country,
                       full_name,
                       phone_number,
@@ -156,8 +225,41 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                           price,
                           image
                       },
-                    quantity
-            },
+                      quantity
+                    },
+                    orders {
+                      address {
+                        id,
+                        country,
+                        full_name,
+                        phone_number,
+                        address_line_one,
+                        address_line_two,
+                        city,
+                        state,
+                        zip_code,
+                        default
+                      },
+                      items {
+                        item {
+                          id,
+                          name,
+                          image,
+                          description,
+                          type
+                        },
+                        item_variation {
+                          id,
+                          option,
+                          variant,
+                          quantity,
+                          price,
+                          image
+                        },
+                        quantity
+                      },
+                      order_date
+                    }
               }
             `,
           data: {
@@ -165,6 +267,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
             email: null,
             addresses: [],
             cart: [],
+            orders: [],
           }
         })
 

@@ -9,37 +9,14 @@ import { pageVariants } from './Home';
 import LoadingSpinner from './LoadingSpinner';
 
 export const CHECK_OUT = gql`
-  mutation checkoutOrder($CartInput: CartInput!, $AddAddressInput: AddAddressInput!) {
-    checkoutOrder(cart: $CartInput, address: $AddAddressInput) {
-        address {
-            country,
-            fullName,
-            phoneNumber,
-            addressLineOne,
-            addressLineTwo,
-            city,
-            state,
-            zipCode,
-            default
-        },
-        items {
-            itemId,
-            image,
-            color,
-            size,
-            quantity,
-            name,
-            price
-        },
-        saleDate,
-    }
+  mutation checkout($CartInput: CheckoutCartInput!, $AddressIdInput: Float!) {
+    checkout(cart: $CartInput, addressId: $AddressIdInput) 
   }
 `;
 
 const Checkout = (props: any) => {
     document.title = 'QWERTY Shop - Checkout';
     const { addToast, removeAllToasts } = useToasts();
-    const [currentAddressIdx, setAddressIdx] = useState(0);
     const userInfo = props.checkCachedUser();
     const addresses = userInfo.addresses && userInfo.addresses.length > 0 ? JSON.parse(JSON.stringify(userInfo.addresses)).sort((a: any, b: any) => {
         const aVal = a.default ? 1 : -1;
@@ -47,11 +24,11 @@ const Checkout = (props: any) => {
 
         return bVal - aVal;
     }) : [];
+    const [currentAddressId, setAddressId] = useState(addresses[0] ? addresses[0].id : null);
     const cart = JSON.parse(JSON.stringify(userInfo.cart));
-    console.log(cart)
     const loadingText = 'Checking out items!'.split('');
 
-    const [checkoutItems, { loading: checkoutLoading }] = useMutation(CHECK_OUT, {
+    const [checkout, { loading: checkoutLoading }] = useMutation(CHECK_OUT, {
         update(_) {
             removeAllToasts();
             addToast('Order completed.', {
@@ -63,20 +40,20 @@ const Checkout = (props: any) => {
         }
     });
 
-    let totalPrice = 0;
-    if (cart && cart.length > 0) {
-        cart.forEach((item: any) => {
-            const { price, quantity } = item;
-            totalPrice += (price * quantity);
-        })
-    }
-    const totalPriceDisplay = parseFloat(totalPrice.toString()).toFixed(2);
-
     const handleCheckout = () => {
-        cart.forEach((cartItem: any) => delete cartItem.__typename);
-        delete addresses[currentAddressIdx].__typename;
+        const cartToSubmit = cart.map((cartItem: any) => {
+            return {
+                item_variation_id: cartItem.item_variation.id,
+                quantity: cartItem.quantity
+            }
+        });
 
-        checkoutItems({ variables: { CartInput: { items: cart }, AddAddressInput: addresses[currentAddressIdx] } }).catch(e => {
+        checkout({
+            variables: {
+                CartInput: { cart: cartToSubmit },
+                AddressIdInput: currentAddressId
+            }
+        }).catch(e => {
             removeAllToasts();
             addToast(e.message, {
                 appearance: 'error',
@@ -156,25 +133,26 @@ const Checkout = (props: any) => {
                                         {
                                             addresses.map((address: any, idx: number) => {
                                                 const {
-                                                    addressLineOne,
+                                                    id,
+                                                    address_line_one,
                                                     city,
-                                                    fullName,
+                                                    full_name,
                                                     state,
-                                                    zipCode,
+                                                    zip_code,
                                                 } = address;
 
                                                 return (
-                                                    <div className='qwerty-shop-checkout-item' key={`checkout address ${address.fullName}`}>
+                                                    <div className='qwerty-shop-checkout-item' key={`checkout address ${address.full_name}`}>
                                                         <input
                                                             type='radio'
                                                             id={`address-${idx}`}
                                                             name='address-idx'
 
-                                                            checked={currentAddressIdx === idx}
-                                                            onChange={() => setAddressIdx(idx)}
+                                                            checked={currentAddressId === id}
+                                                            onChange={() => setAddressId(id)}
                                                         />
-                                                        <label htmlFor={`address-${idx}`}>
-                                                            <span className='qwerty-shop-address-fullName'>{fullName}, </span> {addressLineOne}, {city}, {state} {zipCode}
+                                                        <label htmlFor={`address-${idx}`} style={{ marginLeft: '12px' }}>
+                                                            <span className='qwerty-shop-address-full_name'>{full_name}, </span> {address_line_one}, {city}, {state} {zip_code}
                                                         </label>
                                                     </div>
                                                 )
@@ -189,7 +167,7 @@ const Checkout = (props: any) => {
                         <div className='qwerty-shop-checkout-total'>Total: ${calcTotalPrice(cart)}</div>
                         <div className='qwerty-shop-cart-buttons-container'>
                             {
-                                cart && cart.length > 0 && addresses.length > 0 && Object.keys(addresses[currentAddressIdx]).length > 0 ? (
+                                cart && cart.length > 0 && addresses.length > 0 && addresses.filter((address: any) => address.id === currentAddressId) ? (
                                     <div onClick={handleCheckout}>Confirm Checkout</div>
                                 ) : <div className='qwerty-shop-cart-checkoutCrossed'>Confirm Checkout</div>
                             }

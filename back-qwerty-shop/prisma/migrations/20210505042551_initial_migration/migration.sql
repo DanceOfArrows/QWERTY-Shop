@@ -60,7 +60,9 @@ CREATE TABLE "CartItem" (
 -- CreateTable
 CREATE TABLE "Order" (
     "id" SERIAL NOT NULL,
+    "address_id" INTEGER NOT NULL,
     "user_id" INTEGER NOT NULL,
+    "order_date" TIMESTAMP NOT NULL,
 
     PRIMARY KEY ("id")
 );
@@ -69,7 +71,7 @@ CREATE TABLE "Order" (
 CREATE TABLE "LineItem" (
     "id" SERIAL NOT NULL,
     "order_id" INTEGER NOT NULL,
-    "item_id" INTEGER NOT NULL,
+    "item_variation_id" INTEGER NOT NULL,
     "quantity" SMALLINT NOT NULL,
 
     PRIMARY KEY ("id")
@@ -126,13 +128,16 @@ ALTER TABLE "CartItem" ADD FOREIGN KEY ("cart_id") REFERENCES "Cart"("id") ON DE
 ALTER TABLE "CartItem" ADD FOREIGN KEY ("item_variation_id") REFERENCES "ItemVariation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "Order" ADD FOREIGN KEY ("address_id") REFERENCES "Address"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Order" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LineItem" ADD FOREIGN KEY ("order_id") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "LineItem" ADD FOREIGN KEY ("item_id") REFERENCES "Item"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "LineItem" ADD FOREIGN KEY ("item_variation_id") REFERENCES "ItemVariation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Address" ADD FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

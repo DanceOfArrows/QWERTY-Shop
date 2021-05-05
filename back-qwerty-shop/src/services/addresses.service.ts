@@ -22,6 +22,13 @@ export class AddressesService {
                 default: default_address,
             } = addressInfo;
 
+            const existingAddresses = await this.prisma.address.findMany({
+                where: {
+                    user_id: userId
+                }
+            });
+            const shouldBeDefault = existingAddresses.length === 0 ? true : default_address;
+
             if (default_address) {
                 await this.prisma.address.updateMany({
                     where: {
@@ -43,7 +50,7 @@ export class AddressesService {
                     city,
                     state,
                     zip_code,
-                    default: default_address,
+                    default: shouldBeDefault,
                     user_id: userId
                 }
             });

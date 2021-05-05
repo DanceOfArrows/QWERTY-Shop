@@ -1,7 +1,10 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Address {
+    @Field(() => Int, { nullable: false })
+    id!: number;
+
     @Field(() => String, { nullable: false })
     country!: string;
 

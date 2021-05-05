@@ -46,11 +46,77 @@ const NavBar: React.FC<NavBar> = (props: any) => {
                 fragment UserInfo on FullUser {
                     id,
                     email,
+                    addresses {
+                      id,
+                      country,
+                      full_name,
+                      phone_number,
+                      address_line_one,
+                      address_line_two,
+                      city,
+                      state,
+                      zip_code,
+                      default
+                    },
+                    cart {
+                      item {
+                          id,
+                          name,
+                          image,
+                          description,
+                          type
+                      },
+                      item_variation {
+                          id,
+                          option,
+                          variant,
+                          quantity,
+                          price,
+                          image
+                      },
+                      quantity
+                    },
+                    orders {
+                      address {
+                        id,
+                        country,
+                        full_name,
+                        phone_number,
+                        address_line_one,
+                        address_line_two,
+                        city,
+                        state,
+                        zip_code,
+                        default
+                      },
+                      items {
+                        item {
+                          id,
+                          name,
+                          image,
+                          description,
+                          type
+                        },
+                        item_variation {
+                          id,
+                          option,
+                          variant,
+                          quantity,
+                          price,
+                          image
+                        },
+                        quantity
+                      },
+                      order_date
+                    }
               }
             `,
             data: {
-                id: null,
+                _id: null,
                 email: null,
+                addresses: [],
+                cart: [],
+                orders: [],
             }
         });
         localStorage.removeItem('token');

@@ -6,7 +6,7 @@ import {
 } from '@nestjs/graphql'; import { UseGuards } from '@nestjs/common';
 
 import { AuthGuard } from "./auth.gaurd";
-import { AddressInfoInput } from '../inputs/address.input';
+import { AddressInfoInput } from '../inputs/address.inputs';
 import { AddressesService } from '../services/exportServices';
 import { Address } from '../models/address.model';
 import { User } from '../models/user.model';
