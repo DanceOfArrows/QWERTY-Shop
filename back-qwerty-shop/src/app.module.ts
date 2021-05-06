@@ -32,7 +32,7 @@ const {
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       cors: {
-        origin: 'http://localhost:3000',
+        origin: 'https://qwerty-shop-app.herokuapp.com',
         credentials: true,
       },
       sortSchema: true,

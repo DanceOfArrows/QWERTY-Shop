@@ -1,19 +1,28 @@
-FROM node:16
+FROM node:15 As builder
 
-# Create app directory, this is in our container/in our image
-WORKDIR /lullofthesea/src/app
+WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
+COPY prisma ./prisma/
 
-# RUN npm ci --only=production for production
 RUN npm install
 
-# Bundle app source
 COPY . .
 
 RUN npm run build
 
-EXPOSE 8080
-CMD [ "node", "dist/main" ]
+FROM node:15 as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+COPY . .
+
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/dist ./dist
+
+CMD ["node", "dist/main"]

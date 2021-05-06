@@ -24,8 +24,13 @@ The frontend is the interface that users interact with.  It makes requests to th
 The backend is in charge of the logic that occurs behind the scenes.  This includes making [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) opertaions to the database and handling any data that the user does not need to see.  
 
 #### Here is a flowchart for referrence:  
-\
+
 ![Here is a flowchart for referrence:](/readme-assets/qwerty-shop-structure.png)
+
+
+#### Database Model:  
+
+![Database Model](/readme-assets/qwerty-shop-database.png)
 
 # Technologies Used  
 QWERTY Shop was pretty balanced between the frontend and backend. Both sides were equally important for the app to truly shine. An important note to keep in mind is that these technologies were chosen with the idea of expanding my knowledge (I wanted to pick up TypeScript and GraphQL), so it was a bit out of my comfort zone. Below are the technologies used in this project along with some notes / thoughts.
@@ -150,9 +155,15 @@ There are three main reasons for my choice in using NestJS over other Node JS fr
  3. Is an opinionated framework
 
 The first two reasons on the list are solely in my own interests and pursuit of knowledge.  The third reason was to help keep myself "more organized".  Having an opinionated framework forces me to build in a specific structure that allows others that are familiar with the framework to pick up my code more easily.  In short, this allows for easier / faster development for those familiar with NestJS.  Of course this is just a portfolio project, but I wanted to keep this as a note to myself if anything.  
-### [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-I would like to start this section off by saying that I do regret not using a SQL database like PostreSQL.  Although MongoDB does allow me to be flexible with how I store data, I do not think it was really necessary in this app.  It would have been more beneficial to use a relational database to relate users with orders, orders to items, etc.  Other than that, MongoDB Atlas was a great cloud database service for the data used in this app.  
-I will probably be going back to this at a later time to swap to PostgreSQL.  
+### ~~[MongoDB Atlas](https://www.mongodb.com/cloud/atlas)~~ Replaced by [PostgreSQL](#PostgreSQL)
+~~I would like to start this section off by saying that I do regret not using a SQL database like PostreSQL.~~  Although MongoDB does allow me to be flexible with how I store data, I do not think it was really necessary in this app.  It would have been more beneficial to use a relational database to relate users with orders, orders to items, etc.  Other than that, MongoDB Atlas was a great cloud database service for the data used in this app.  
+~~I will probably be going back to this at a later time to swap to PostgreSQL.~~  Completed.
+
+### [PostgreSQL](https://www.postgresql.org/)  
+There was not particular reason that I chose Postgres as my database.  It was what I was most familiar with.  Postgres also allows me to relate my data in an organized manner compared to storing everything into a BSON file with MongoDB.  There is a table above that displays the [structure of the database](#database-model).
+
+### [Prisma ORM](https://www.prisma.io/)  
+This was my first time using Prisma as my ORM.  Implenting this into the app was very easy in comparison to sequelize.  Creating models and GraphQL schemas, making migrations and relating tables, and seeding data all became very trivial issues when using Prisma.  A lot of those things were also generated automatically which helped with the speed of development.  Overall, I felt that Prisma is the go to choice when it comes to GraphQL and speed of development.
 
 ### [GraphQL](https://graphql.org/)
 GraphQL was very interesting to work with.  It allowed me to be flexible with the ways I was retrieving data from the backend versus having to make calls to an endpoint when using REST APIs.  My main reasons for going with GraphQL were:
@@ -168,6 +179,6 @@ My original goals for this app were as follows:
  2. Create a simple e-commerce app while learning TypeScript + GraphQL
  3. Demonstrate to myself (and possibly others) that I have improved and will continue to do so
 
-These goals have been met and I am very excited to continue working on future projects.  As of current time, the only plan for QWERTY Shop is to switch the database from MongoDB to PostgreSQL.  
+These goals have been met and I am very excited to continue working on future projects.  ~~As of current time, the only plan for QWERTY Shop is to switch the database from MongoDB to PostgreSQL.~~  Database has been swapped over and there are no future plans as of current time.
 
 Thank you for checking out my project and reading through this!
