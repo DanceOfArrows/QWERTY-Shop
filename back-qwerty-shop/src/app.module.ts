@@ -15,7 +15,7 @@ const {
   CartsModule,
   CheckoutModule,
   ItemsModule,
-  UsersModule
+  UsersModule,
 } = Modules;
 const {
   AppService,
@@ -23,7 +23,7 @@ const {
   CheckoutService,
   ItemsService,
   PrismaService,
-  UsersService
+  UsersService,
 } = Services;
 
 @Module({
@@ -32,7 +32,7 @@ const {
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       cors: {
-        origin: 'https://qwerty-shop-app.herokuapp.com',
+        origin: process.env.FRONTEND_URL,
         credentials: true,
       },
       sortSchema: true,
@@ -60,7 +60,7 @@ const {
     PrismaService,
     UsersService,
     AddressesService,
-    CheckoutService
+    CheckoutService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

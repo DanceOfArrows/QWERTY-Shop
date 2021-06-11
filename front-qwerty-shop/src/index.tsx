@@ -1,41 +1,46 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { ApolloClient, ApolloLink, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
-import { persistCache, LocalStorageWrapper } from 'apollo3-cache-persist';
-import { onError } from '@apollo/client/link/error';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React from "react";
+import ReactDOM from "react-dom";
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  createHttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
+import { onError } from "@apollo/client/link/error";
+import { BrowserRouter as Router } from "react-router-dom";
 
-import App from './App';
-import './index.scss';
-import './fonts/Lato-Regular.ttf';
+import App from "./App";
+import "./index.scss";
+import "./fonts/Lato-Regular.ttf";
 
 const setupApollo = async () => {
-  const apiBaseUrl = process.env.NODE_ENV === "production" ? 'https://qwerty-shop-back.herokuapp.com' : 'http://localhost:8080';
   const cache = new InMemoryCache({
     addTypename: true,
     typePolicies: {
       AuthToken: {
-        keyFields: () => 'token',
+        keyFields: () => "token",
         merge: true,
       },
       FullUser: {
-        keyFields: () => 'userInfo',
+        keyFields: () => "userInfo",
         merge: true,
       },
       ItemType: {
         keyFields: (data) => {
-          return `Product:${data.type}`
-        },
-        merge: true
-      },
-      SingleItemType: {
-        keyFields: (data: any) => {
-          return `Item:${data['item']._id}`
+          return `Product:${data.type}`;
         },
         merge: true,
       },
-    }
+      SingleItemType: {
+        keyFields: (data: any) => {
+          return `Item:${data["item"]._id}`;
+        },
+        merge: true,
+      },
+    },
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -45,9 +50,9 @@ const setupApollo = async () => {
         //   `[GraphQL error]: Message: ${message}`,
         // )
 
-        if (message === 'Invalid token' || message === 'Missing token') {
-          localStorage.removeItem('token');
-          window.dispatchEvent(new Event('storage'));
+        if (message === "Invalid token" || message === "Missing token") {
+          localStorage.removeItem("token");
+          window.dispatchEvent(new Event("storage"));
         }
       });
     }
@@ -58,18 +63,18 @@ const setupApollo = async () => {
   });
 
   const httpLink = createHttpLink({
-    uri: `${apiBaseUrl}/graphql`,
+    uri: `${process.env.REACT_APP_API_BASE_URL}/graphql`,
   });
 
   const authLink = setContext((_, { headers }) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     return {
       headers: {
         ...headers,
         authorization: token ? `Bearer ${token}` : "",
-      }
-    }
+      },
+    };
   });
 
   await persistCache({
@@ -90,10 +95,10 @@ const setupApollo = async () => {
 
   ReactDOM.render(
     <Router>
-      <ApolloProvider client={apolloClient} >
+      <ApolloProvider client={apolloClient}>
         <App client={apolloClient} />
       </ApolloProvider>
     </Router>,
-    document.getElementById('qwerty-shop-root'),
+    document.getElementById("qwerty-shop-root")
   );
 })();
