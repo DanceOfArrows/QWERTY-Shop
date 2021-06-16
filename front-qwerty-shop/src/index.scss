@@ -82,6 +82,7 @@ input[type="number"] {
 
   .qwerty-shop-app-page-transition {
     height: 100%;
+    overflow: auto;
   }
 }
 
@@ -710,11 +711,14 @@ $productDivs: 0, 1, 2, 3, 4, 5;
   .qwerty-shop-item-info-container {
     display: grid;
     grid-template: 1fr / 1fr 1fr;
-    margin-top: 24px;
+    margin: 2.5rem 5rem;
     height: calc(100% - 72px);
 
     .qwerty-shop-item-info-right {
       color: white;
+      display: flex;
+      flex-direction: column;
+      margin-left: 5rem;
     }
 
     .qwerty-shop-item-info-left {
@@ -722,12 +726,12 @@ $productDivs: 0, 1, 2, 3, 4, 5;
       width: 100%;
 
       .qwerty-shop-item-image-container {
-        height: 50%;
+        height: 25rem;
         margin-left: 20%;
         position: relative;
 
         .qwerty-shop-item-image-main {
-          max-height: 400px;
+          max-height: 25rem;
           position: absolute;
           max-width: 80%;
         }
@@ -741,12 +745,18 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
         img {
           margin: 0 24px 24px 0;
+          object-fit: cover;
           height: 128px;
           width: 128px;
         }
 
+        .qwerty-shop-item-image-sub,
         .qwerty-shop-item-image-sub-active {
           border: solid 2px transparent;
+          box-sizing: border-box;
+        }
+
+        .qwerty-shop-item-image-sub-active {
           border-image-slice: 1;
           border-image-source: linear-gradient(to right, #880383, #21bffe);
         }
@@ -763,10 +773,11 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 }
 
 .qwerty-shop-item-variation-btn,
-.qwerty-shop-item-variation-unavailable-btn,
+.qwerty-shop-item-variation-dne,
 .qwerty-shop-item-addToCart {
-  margin-right: 12px;
-  padding: 12px;
+  border: solid 1px transparent;
+  margin: 1rem 1rem 0 0;
+  padding: 1rem;
 
   width: max-content;
 }
@@ -828,9 +839,12 @@ $productDivs: 0, 1, 2, 3, 4, 5;
   opacity: 1 !important;
 }
 
-.qwerty-shop-item-variation-unavailable-btn {
-  color: rgba(255, 255, 255, 0.7);
-  text-decoration: line-through;
+.qwerty-shop-item-variation-dne {
+  opacity: 0.75;
+
+  &:hover {
+    opacity: 1 !important;
+  }
 }
 
 .qwerty-shop-item-section-container {
@@ -850,7 +864,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
   background: black;
   border: 1px solid #eee;
   color: white;
-  height: 42px;
+  height: 100%;
   line-height: 1.65;
   float: left;
   display: block;
@@ -872,11 +886,11 @@ $productDivs: 0, 1, 2, 3, 4, 5;
   width: 230px;
 
   .qwerty-shop-item-addToCart {
-    align-self: center;
     border: 1px solid transparent;
     border-image-slice: 1;
     border-image-source: linear-gradient(to right, #880383, #21bffe);
-    margin-left: auto;
+    height: calc(100% - 2rem);
+    margin: 0 auto !important;
     transition: all 0.35s ease;
 
     &:hover {
@@ -887,7 +901,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
 .qwerty-shop-item-quantity-nav {
   float: left;
-  height: 42px;
+  height: 100%;
   margin-right: auto;
   position: relative;
 
@@ -927,6 +941,8 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 .qwerty-shop-item-options,
 .qwerty-shop-item-variants {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 35rem;
 }
 
 .qwerty-shop-item-name {
@@ -962,6 +978,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
     height: calc(100% - 48px);
     justify-content: flex-start;
     margin: 24px 0 24px 48px;
+    overflow: auto;
     width: calc(100% - 48px);
 
     a {
@@ -1093,7 +1110,6 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
   .qwerty-shop-profile-orders-container {
     max-height: 700px;
-    overflow: auto;
   }
 }
 
@@ -1197,6 +1213,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 
   .qwerty-shop-cart-item-image {
     border-radius: 12px;
+    object-fit: cover;
     height: 100%;
     width: 100%;
   }

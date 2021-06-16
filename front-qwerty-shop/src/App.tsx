@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Route,
-  Switch,
-  useLocation,
-} from 'react-router-dom';
-import { gql, useLazyQuery } from '@apollo/client';
-import { AnimatePresence } from 'framer-motion';
-import { ToastProvider } from 'react-toast-notifications';
+import React, { useEffect, useState } from "react";
+import { Route, Switch, useLocation } from "react-router-dom";
+import { gql, useLazyQuery } from "@apollo/client";
+import { AnimatePresence } from "framer-motion";
+import { ToastProvider } from "react-toast-notifications";
 
-import * as Components from './components/exportComponents';
-import { ApolloClientInterface } from './components/exportInterfaces';
+import * as Components from "./components/exportComponents";
+import { ApolloClientInterface } from "./components/exportInterfaces";
 
 const {
   AddAddress,
@@ -24,72 +20,72 @@ const {
   Product,
   ProductCategories,
   Profile,
-  SignUp
+  SignUp,
 } = Components;
 const { AuthRouteWithRouter, ProtectedRouteWithRouter } = AuthRoutes;
 
 export const GET_USER_INFO = gql`
   query getUserData {
     getUserData {
-      id,
-      email,
+      id
+      email
       addresses {
-          id,
-          country,
-          full_name,
-          phone_number,
-          address_line_one,
-          address_line_two,
-          city,
-          state,
-          zip_code,
-          default
-      },
+        id
+        country
+        full_name
+        phone_number
+        address_line_one
+        address_line_two
+        city
+        state
+        zip_code
+        default
+      }
       cart {
-          item {
-              id,
-              name,
-          },
-          item_variation {
-              id,
-              option,
-              variant,
-              price,
-              image
-          },
-          quantity
-      },
+        item {
+          id
+          name
+        }
+        item_variation {
+          id
+          option
+          variant
+          price
+          image
+        }
+        quantity
+      }
       orders {
         address {
-          id,
-          country,
-          full_name,
-          phone_number,
-          address_line_one,
-          address_line_two,
-          city,
-          state,
-          zip_code,
+          id
+          country
+          full_name
+          phone_number
+          address_line_one
+          address_line_two
+          city
+          state
+          zip_code
           default
-        },
+        }
         items {
           item {
-            id,
-            name,
-            image,
-            description,
-            type
-          },
-          item_variation {
-            id,
-            option,
-            variant,
-            quantity,
-            price,
+            id
+            name
             image
-          },
+            description
+            type
+          }
+          item_variation {
+            id
+            option
+            variant
+            quantity
+            price
+            image
+          }
           quantity
-        },
+        }
         order_date
       }
     }
@@ -98,84 +94,83 @@ export const GET_USER_INFO = gql`
 
 const App: React.FC<ApolloClientInterface> = (props) => {
   const { client } = props;
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState("");
   const location = useLocation();
   const [getUserInfo, { data, error, loading }] = useLazyQuery(GET_USER_INFO, {
-    fetchPolicy: 'network-only',
-    nextFetchPolicy: 'network-only'
+    fetchPolicy: "network-only",
+    nextFetchPolicy: "network-only",
   });
 
   const checkCachedUser = () => {
     const existingUser = client.readFragment({
-      id: 'userInfo',
-      fragment:
-        gql`
+      id: "userInfo",
+      fragment: gql`
         fragment UserInfo on FullUser {
-            id,
-            email,
-            addresses {
-              id,
-              country,
-              full_name,
-              phone_number,
-              address_line_one,
-              address_line_two,
-              city,
-              state,
-              zip_code,
-              default
-            },
-            cart {
-              item {
-                  id,
-                  name,
-                  image,
-                  description,
-                  type
-              },
-              item_variation {
-                  id,
-                  option,
-                  variant,
-                  quantity,
-                  price,
-                  image
-              },
-              quantity
-            },
-            orders {
-              address {
-                id,
-                country,
-                full_name,
-                phone_number,
-                address_line_one,
-                address_line_two,
-                city,
-                state,
-                zip_code,
-                default
-              },
-              items {
-                item {
-                  id,
-                  name,
-                  image,
-                  description,
-                  type
-                },
-                item_variation {
-                  id,
-                  option,
-                  variant,
-                  quantity,
-                  price,
-                  image
-                },
-                quantity
-              },
-              order_date
+          id
+          email
+          addresses {
+            id
+            country
+            full_name
+            phone_number
+            address_line_one
+            address_line_two
+            city
+            state
+            zip_code
+            default
+          }
+          cart {
+            item {
+              id
+              name
+              image
+              description
+              type
             }
+            item_variation {
+              id
+              option
+              variant
+              quantity
+              price
+              image
+            }
+            quantity
+          }
+          orders {
+            address {
+              id
+              country
+              full_name
+              phone_number
+              address_line_one
+              address_line_two
+              city
+              state
+              zip_code
+              default
+            }
+            items {
+              item {
+                id
+                name
+                image
+                description
+                type
+              }
+              item_variation {
+                id
+                option
+                variant
+                quantity
+                price
+                image
+              }
+              quantity
+            }
+            order_date
+          }
         }
       `,
     });
@@ -183,105 +178,105 @@ const App: React.FC<ApolloClientInterface> = (props) => {
     return existingUser;
   };
 
-  const localToken = localStorage.getItem('token');
-  useEffect(() => {
-    function removeToken() {
-      if (data && !error) {
-        return;
-      } else {
-        setToken('');
-        client.writeFragment({
-          id: 'userInfo',
-          fragment:
-            gql`
-                fragment UserInfo on FullUser {
-                    id,
-                    email,
-                    addresses {
-                      id,
-                      country,
-                      full_name,
-                      phone_number,
-                      address_line_one,
-                      address_line_two,
-                      city,
-                      state,
-                      zip_code,
-                      default
-                    },
-                    cart {
-                      item {
-                          id,
-                          name,
-                          image,
-                          description,
-                          type
-                      },
-                      item_variation {
-                          id,
-                          option,
-                          variant,
-                          quantity,
-                          price,
-                          image
-                      },
-                      quantity
-                    },
-                    orders {
-                      address {
-                        id,
-                        country,
-                        full_name,
-                        phone_number,
-                        address_line_one,
-                        address_line_two,
-                        city,
-                        state,
-                        zip_code,
-                        default
-                      },
-                      items {
-                        item {
-                          id,
-                          name,
-                          image,
-                          description,
-                          type
-                        },
-                        item_variation {
-                          id,
-                          option,
-                          variant,
-                          quantity,
-                          price,
-                          image
-                        },
-                        quantity
-                      },
-                      order_date
-                    }
-              }
-            `,
-          data: {
-            _id: null,
-            email: null,
-            addresses: [],
-            cart: [],
-            orders: [],
-          }
-        })
+  const localToken = localStorage.getItem("token");
+  // useEffect(() => {
+  //   function removeToken() {
+  //     if (data && !error) {
+  //       return;
+  //     } else {
+  //       setToken('');
+  //       client.writeFragment({
+  //         id: 'userInfo',
+  //         fragment:
+  //           gql`
+  //               fragment UserInfo on FullUser {
+  //                   id,
+  //                   email,
+  //                   addresses {
+  //                     id,
+  //                     country,
+  //                     full_name,
+  //                     phone_number,
+  //                     address_line_one,
+  //                     address_line_two,
+  //                     city,
+  //                     state,
+  //                     zip_code,
+  //                     default
+  //                   },
+  //                   cart {
+  //                     item {
+  //                         id,
+  //                         name,
+  //                         image,
+  //                         description,
+  //                         type
+  //                     },
+  //                     item_variation {
+  //                         id,
+  //                         option,
+  //                         variant,
+  //                         quantity,
+  //                         price,
+  //                         image
+  //                     },
+  //                     quantity
+  //                   },
+  //                   orders {
+  //                     address {
+  //                       id,
+  //                       country,
+  //                       full_name,
+  //                       phone_number,
+  //                       address_line_one,
+  //                       address_line_two,
+  //                       city,
+  //                       state,
+  //                       zip_code,
+  //                       default
+  //                     },
+  //                     items {
+  //                       item {
+  //                         id,
+  //                         name,
+  //                         image,
+  //                         description,
+  //                         type
+  //                       },
+  //                       item_variation {
+  //                         id,
+  //                         option,
+  //                         variant,
+  //                         quantity,
+  //                         price,
+  //                         image
+  //                       },
+  //                       quantity
+  //                     },
+  //                     order_date
+  //                   }
+  //             }
+  //           `,
+  //         data: {
+  //           _id: null,
+  //           email: null,
+  //           addresses: [],
+  //           cart: [],
+  //           orders: [],
+  //         }
+  //       })
 
-        alert('Login session expired.');
-      }
-    }
+  //       alert('Login session expired.');
+  //     }
+  //   }
 
-    getUserInfo();
+  //   getUserInfo();
 
-    window.addEventListener('storage', removeToken);
-    return () => window.removeEventListener('storage', removeToken);
-  }, [localToken, token]);
+  //   window.addEventListener('storage', removeToken);
+  //   return () => window.removeEventListener('storage', removeToken);
+  // }, [localToken, token]);
 
-  if (localToken && localToken != '' && token === '') {
+  if (localToken && localToken != "" && token === "") {
     if (!error && data) setToken(localToken);
   }
 
@@ -290,16 +285,28 @@ const App: React.FC<ApolloClientInterface> = (props) => {
       <ToastProvider
         autoDismiss
         autoDismissTimeout={6000}
-        placement='bottom-left'
+        placement="bottom-left"
       >
-        <NavBar checkCachedUser={checkCachedUser} client={client} key={token} setToken={setToken} token={token} />
-        <div className='qwerty-shop-app' style={document.location.pathname === '/' ? { marginTop: 0 } : undefined}>
-          <AnimatePresence exitBeforeEnter={true} >
+        <NavBar
+          checkCachedUser={checkCachedUser}
+          client={client}
+          key={token}
+          setToken={setToken}
+          token={token}
+        />
+        <div
+          className="qwerty-shop-app"
+          style={
+            document.location.pathname === "/" ? { marginTop: 0 } : undefined
+          }
+        >
+          <AnimatePresence exitBeforeEnter={true}>
             <Switch location={location} key={location.pathname}>
-              <Route exact path='/' component={Home} />
+              <Route exact path="/" component={Home} />
               <ProtectedRouteWithRouter
                 checkCachedUser={checkCachedUser}
-                exact path='/addaddress'
+                exact
+                path="/addaddress"
                 client={client}
                 component={AddAddress}
                 getUserInfo={getUserInfo}
@@ -307,13 +314,23 @@ const App: React.FC<ApolloClientInterface> = (props) => {
                 setToken={setToken}
                 token={token}
               />
-              <Route exact path='/products' component={ProductCategories} />
-              <Route exact path='/products/:productType' component={Product} />
+              <Route exact path="/products" component={ProductCategories} />
+              <Route exact path="/products/:productType" component={Product} />
               <Route
-                exact path='/item/:itemId'
-                render={(reactProps) => <Item {...reactProps} checkCachedUser={checkCachedUser} client={client} />} />
+                exact
+                path="/item/:itemId"
+                render={(reactProps) => (
+                  <Item
+                    {...reactProps}
+                    checkCachedUser={checkCachedUser}
+                    client={client}
+                  />
+                )}
+              />
               <AuthRouteWithRouter
-                checkCachedUser={checkCachedUser} exact path='/login'
+                checkCachedUser={checkCachedUser}
+                exact
+                path="/login"
                 component={Login}
                 getUserInfo={getUserInfo}
                 loading={loading}
@@ -322,7 +339,8 @@ const App: React.FC<ApolloClientInterface> = (props) => {
               />
               <AuthRouteWithRouter
                 checkCachedUser={checkCachedUser}
-                exact path='/signup'
+                exact
+                path="/signup"
                 component={SignUp}
                 getUserInfo={getUserInfo}
                 loading={loading}
@@ -331,12 +349,17 @@ const App: React.FC<ApolloClientInterface> = (props) => {
               />
               <ProtectedRouteWithRouter
                 checkCachedUser={checkCachedUser}
-                exact path='/profile'
+                exact
+                path="/profile"
                 component={Profile}
                 getUserInfo={getUserInfo}
-                loading={loading} setToken={setToken} token={token} />
+                loading={loading}
+                setToken={setToken}
+                token={token}
+              />
               <ProtectedRouteWithRouter
-                exact path='/cart'
+                exact
+                path="/cart"
                 component={Cart}
                 checkCachedUser={checkCachedUser}
                 client={client}
@@ -346,7 +369,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
               />
               <ProtectedRouteWithRouter
                 exact
-                path='/checkout'
+                path="/checkout"
                 component={Checkout}
                 checkCachedUser={checkCachedUser}
                 client={client}
