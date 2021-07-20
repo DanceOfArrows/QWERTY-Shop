@@ -85,7 +85,7 @@ const Product = () => {
                                         itemPricesToSort.sort();
 
                                         return (
-                                            <NavLink to={`/item/${item.id}`} className='qwerty-shop-item-container' key={`qwerty-shop-item-${item.name}`}>
+                                            <NavLink to={`/item/${item.id}`} className='qwerty-shop-item-container a-reset' key={`qwerty-shop-item-${item.name}`}>
                                                 <img className='qwerty-shop-item-image' src={item.image} alt='item-img' />
                                                 <div className='qwerty-shop-item-name'>{item.name}</div>
                                                 <div className='qwerty-shop-item-price'>${itemPricesToSort[0]} - ${itemPricesToSort[itemPricesToSort.length - 1]}</div>

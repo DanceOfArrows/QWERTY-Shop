@@ -22,7 +22,7 @@ const SignUp = (props: any) => {
         removeAllToasts();
 
         const { email, password, passwordConfirm } = signUpInfo;
-        if (password != passwordConfirm) addToast('Passwords do not match', {
+        if (password !== passwordConfirm) addToast('Passwords do not match', {
             appearance: 'error',
             autoDismiss: true,
         });
@@ -54,16 +54,16 @@ const SignUp = (props: any) => {
                 <h1>Sign Up</h1>
                 <form onSubmit={handleSubmit(submitSignUp)}>
                     <label htmlFor='qwerty-shop-sign-up-email'>Email</label>
-                    <input type='email' name='email' id='qwerty-shop-sign-up-email' ref={register} />
+                    <input {...register('email', {required: true})} type='email' name='email' id='qwerty-shop-sign-up-email' />
 
                     <label htmlFor='qwerty-shop-sign-up-password'>Password</label>
-                    <input type='password' name='password' id='qwerty-shop-sign-up-password' ref={register} />
+                    <input {...register('password', {required: true})} type='password' name='password' id='qwerty-shop-sign-up-password'/>
 
                     <label htmlFor='qwerty-shop-sign-up-password-confirm'>Confirm Password</label>
-                    <input type='password' name='passwordConfirm' id='qwerty-shop-sign-up-password-confirm' ref={register} />
+                    <input {...register('passwordConfirm', {required: true})} type='password' name='passwordConfirm' id='qwerty-shop-sign-up-password-confirm' />
 
                     {
-                        loading && loading.called && loading.loading || testLoading ? (
+                        (loading && loading.called && loading.loading) || testLoading ? (
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
                                 <LoadingSpinner />
                             </div>

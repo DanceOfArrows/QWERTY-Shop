@@ -1,4 +1,11 @@
-export const countries = [
+interface SelectItem {
+    [value: string]: string;
+    label: string;
+}
+
+interface SelectDropdown extends Array<SelectItem>{};
+
+export const countries: SelectDropdown = [
     { value: "AFG", label: 'Afghanistan' },
     { value: "ALA", label: 'Åland Islands' },
     { value: "ALB", label: 'Albania' },
@@ -250,7 +257,7 @@ export const countries = [
     { value: "ZWE", label: 'Zimbabwe' },
 ];
 
-export const states = [
+export const states: SelectDropdown = [
     {
         label: 'Alabama',
         value: 'AL',

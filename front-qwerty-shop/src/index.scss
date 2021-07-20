@@ -19,6 +19,7 @@
 
 a,
 .qwerty-shop-navbar-logout,
+.qwerty-shop-item-name,
 button {
   background-clip: text;
   background-color: #ffffff;
@@ -39,6 +40,29 @@ button {
 
   &:hover {
     background-size: 100%;
+  }
+}
+
+.a-reset {
+  background-clip: initial;
+  background-color: initial;
+  background-image: initial;
+  background-repeat: initial;
+  background-size: initial;
+  color: #ffffff;
+  font-size: initial;
+  font-weight: initial;
+  image-rendering: initial;
+  outline-style: initial;
+  text-decoration: initial;
+  transition: background-size initial;
+  -webkit-background-clip: initial;
+  -webkit-text-fill-color: initial;
+  -moz-background-clip: initial;
+  -moz-text-fill-color: initial;
+
+  &:hover {
+    background-size: initial;
   }
 }
 
@@ -636,65 +660,38 @@ $productDivs: 0, 1, 2, 3, 4, 5;
 /* Products Style */
 .qwerty-shop-item-list {
   display: flex;
+  height: calc(100% - 48px);
   flex-direction: row;
-  flex: 1 0 auto;
 }
 
 .qwerty-shop-item-container {
   align-items: center;
-  display: grid;
-  font-size: initial;
-  grid-template: 75% 1fr 1fr / 1fr;
-  height: 320px;
-  margin: 4em 0 4em 8em;
-  min-width: 280px;
-  transition: transform 300ms ease;
-  -webkit-text-fill-color: initial;
+  display: flex;
+  flex-direction: column;
+  height: 20rem;
+  justify-content: center;
+  margin: 2rem 0 2rem 2rem;
+  transition: transform 350ms ease;
+  width: 20rem;
 
   img {
-    border-radius: 12px;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.9;
-    width: 280px;
+    border-radius: 1rem;
+    height: 15rem;
+    width: 15rem;
   }
 
-  &:hover {
-    transform: scale(1.1);
-
-    .qwerty-shop-item-name,
-    .qwerty-shop-item-price {
-      background-size: 100%;
-    }
+  .qwerty-shop-item-name, .qwerty-shop-item-price {
+    font-size: 1.2rem;
+    margin: 0.25rem 0;
   }
 
-  .qwerty-shop-item-name {
-    background-clip: text;
-    background-color: #ffffff;
-    background-image: linear-gradient(to right, #21bffe, #880383);
-    background-repeat: no-repeat;
-    background-size: 0;
-    color: #ffffff;
-    font-size: 1.25rem;
-    font-weight: 400;
-    image-rendering: -webkit-optimize-contrast;
-    outline-style: none;
-    text-decoration: none;
-    transition: background-size 0.35s ease-out;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -moz-background-clip: text;
-    -moz-text-fill-color: transparent;
-  }
+ &:hover {
+   transform: scale(1.1);
 
-  .qwerty-shop-item-name {
-    font-size: 1.25em;
-  }
-
-  .qwerty-shop-item-price {
-    align-self: flex-start;
-    font-weight: bold;
-  }
+   .qwerty-shop-item-name {
+     background-size: 100%;
+   }
+ }
 }
 
 /* Item Style */

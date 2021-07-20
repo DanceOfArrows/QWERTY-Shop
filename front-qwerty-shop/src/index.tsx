@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import {
   ApolloClient,
@@ -8,7 +7,7 @@ import {
   InMemoryCache,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import { persistCache, LocalStorageWrapper } from "apollo3-cache-persist";
+import { persistCache } from "apollo3-cache-persist";
 import { onError } from "@apollo/client/link/error";
 import { BrowserRouter as Router } from "react-router-dom";
 
@@ -54,6 +53,8 @@ const setupApollo = async () => {
           localStorage.removeItem("token");
           window.dispatchEvent(new Event("storage"));
         }
+
+        return message;
       });
     }
 
@@ -79,7 +80,7 @@ const setupApollo = async () => {
 
   await persistCache({
     cache,
-    storage: new LocalStorageWrapper(window.localStorage),
+    storage: window.localStorage as any,
   });
 
   const apolloClient = new ApolloClient({

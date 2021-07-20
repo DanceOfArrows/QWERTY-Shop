@@ -7,7 +7,7 @@ import * as BackgroundImages from '../images/exportImages';
 
 const ProductCategories = () => {
     return (
-        <>
+        <motion.div variants={pageVariants}>
             <div className='qwerty-shop-home-product-container'>
                 <div
                     className='qwerty-shop-home-product-category'
@@ -62,7 +62,7 @@ const ProductCategories = () => {
                     </NavLink>
                 </div>
             </div>
-        </>
+        </motion.div>
     );
 }
 

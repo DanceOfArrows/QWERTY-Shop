@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Route, Switch, useLocation } from "react-router-dom";
 import { gql, useLazyQuery } from "@apollo/client";
 import { AnimatePresence } from "framer-motion";
@@ -276,7 +276,7 @@ const App: React.FC<ApolloClientInterface> = (props) => {
   //   return () => window.removeEventListener('storage', removeToken);
   // }, [localToken, token]);
 
-  if (localToken && localToken != "" && token === "") {
+  if (localToken && localToken !== "" && token === "") {
     if (!error && data) setToken(localToken);
   }
 

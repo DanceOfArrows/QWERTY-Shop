@@ -49,23 +49,23 @@ const Login = (props: any) => {
                 <form onSubmit={handleSubmit(submitLogin)}>
                     <label htmlFor='qwerty-shop-login-email'>Email</label>
                     <input
+                        {...register('email', {required: true})}
                         type='email'
                         name='email'
                         id='qwerty-shop-login-email'
-                        ref={register}
                     />
 
                     <label htmlFor='qwerty-shop-login-password'>Password</label>
                     <input
+                    {...register('password', {required: true})}
                         type='password'
                         name='password'
                         id='qwerty-shop-login-password'
-                        ref={register}
                     />
                     {
-                        loading &&
+                        (loading &&
                             loading.called &&
-                            loading.loading ||
+                            loading.loading) ||
                             testLoading ? (
                             <div className='qwerty-shop-login-loading'>
                                 <LoadingSpinner />

@@ -2,13 +2,13 @@
     "scripts": {
         "build": "cd client && npm run build",
         "install-fullstack": "concurrently \"cd back-qwerty-shop && npm install\" \"cd front-qwerty-shop && npm install\"",
-        "start": "concurrently \"cd back-qwerty-shop && npm run start:dev\" \"cd front-qwerty-shop && npm start\""
+        "start": "concurrently \"cd back-qwerty-shop && npm start\" \"cd front-qwerty-shop && npm start\""
     },
     "devDependencies": {
-        "concurrently": "^5.3.0"
+        "concurrently": "^6.2.0"
     },
     "dependencies": {
-        "apollo3-cache-persist": "^0.9.1",
+        "apollo3-cache-persist": "^0.10.0",
         "graphql-scalar-objectid": "^0.1.2"
     }
 }

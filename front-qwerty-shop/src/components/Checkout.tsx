@@ -108,7 +108,7 @@ const Checkout = (props: any) => {
 
                                         return (
                                             <div className='qwerty-shop-cart-item' key={`cart ${itemVariationId}`}>
-                                                <img className='qwerty-shop-cart-item-image' src={image} alt='item image' />
+                                                <img className='qwerty-shop-cart-item-image' src={image} alt='item' />
                                                 <div className='qwerty-shop-cart-item-info-container'>
                                                     <NavLink to={`/item/${itemId}`} className='qwerty-shop-cart-item-info-name'>{name}</NavLink>
                                                     <div>Option: <span className='qwerty-shop-cart-item-info-color'>{option}</span> </div>

@@ -3,7 +3,7 @@ import { gql, useMutation } from '@apollo/client';
 import { motion } from 'framer-motion';
 import postalCodes from 'postal-codes-js';
 import PhoneInput, { isPossiblePhoneNumber } from 'react-phone-number-input'
-import { Controller, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { NavLink } from "react-router-dom";
 import { useToasts } from 'react-toast-notifications'
 import Select from 'react-select';
@@ -20,13 +20,21 @@ const ADD_ADDRESS = gql`
 `;
 
 const AddAddress = (props: any) => {
-    document.title = 'QWERTY Shop - Login'
+    document.title = 'QWERTY Shop - Add Address'
     let testLoading = false;
-    const { register, handleSubmit, control, formState: { errors } } = useForm({ mode: 'all' });
+    const { register, handleSubmit, formState: { errors } } = useForm({ mode: 'all' });
     const { addToast, removeAllToasts } = useToasts();
-    const [country, setCountry] = useState('USA');
+    const [country, setCountry] = useState<string>('USA');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [state, setState] = useState('');
+    const [state, setState] = useState<string>('');
+
+    const validateCountry = () => {
+        return countries.filter(({ value }) => country === value) ? true : false;
+    }
+
+    const validateState= () => {
+        return states.filter(({ value }) => state === value) ? true : false;
+    }
 
     const validateZipCode = (zipCode: string) => {
         return postalCodes.validate(country, zipCode) === true
@@ -50,12 +58,16 @@ const AddAddress = (props: any) => {
     const submitNewAddress = (addressInfo: Object) => {
         removeAllToasts();
 
+        console.log(addressInfo)
+
         const fullAddressInfo = { ...addressInfo, country, phone_number: phoneNumber, state }
         addAddress({ variables: { addressInfo: fullAddressInfo } }).catch(e => addToast(e.message, {
             appearance: 'error',
             autoDismiss: true,
         }));
     };
+
+    console.log(errors)
 
     return (
         <motion.div
@@ -81,29 +93,29 @@ const AddAddress = (props: any) => {
                     <form onSubmit={handleSubmit(submitNewAddress)}>
                         <label htmlFor='qwerty-shop-address-country'>Country</label>
                         <Select
+                            {...register('country', {validate: {validateCountry}})}
                             className='qwerty-shop-select'
                             classNamePrefix="select"
-                            id='qwerty-shop-login-country'
+                            id='qwerty-shop-address-country'
                             name='country'
                             onChange={(option) => setCountry(option!.value)}
                             options={countries}
-                            ref={register}
                             styles={selectStyles}
                             value={countries.filter(({ value }) => country === value)}
                         />
 
                         <label htmlFor='qwerty-shop-address-fullName'>Full Name</label>
                         <input
+                            {...register('full_name', { required: true })}
                             type='text'
                             className={errors.full_name ? 'qwerty-shop-address-input-error' : ''}
                             name='full_name'
-                            id='qwerty-shop-address-fullName'
-                            {...register('full_name', { required: true })}
-                            ref={register}
+                            id='qwerty-shop-address-fullName'           
                         />
 
                         <label htmlFor='qwerty-shop-address-phoneNumber'>Phone Number</label>
                         <PhoneInput
+                            {...register('phone_number', { required: true })}
                             className={
                                 errors.phone_number ? 'qwerty-shop-address-phone-input-error' :
                                     !isPossiblePhoneNumber(phoneNumber) && phoneNumber.length > 0 ?
@@ -117,73 +129,68 @@ const AddAddress = (props: any) => {
                                 phone ? setPhoneNumber(phone) : setPhoneNumber('');
                             }}
                             placeholder="Enter phone number"
-                            ref={register}
-                            {...register('phone_number', { required: true })}
                             value={phoneNumber}
                         />
 
                         <label htmlFor='qwerty-shop-address-addressLineOne'>Address Line One</label>
                         <input
+                            {...register('address_line_one', { required: true })}
                             type='text'
                             className={errors.address_line_one ? 'qwerty-shop-address-input-error' : ''}
                             name='address_line_one'
                             id='qwerty-shop-address-addressLineOne'
-                            {...register('address_line_one', { required: true })}
-                            ref={register}
                         />
 
                         <label htmlFor='qwerty-shop-address-addressLineTwo'>Address Line Two</label>
                         <input
+                        {...register('address_line_two')}
                             type='text'
                             name='address_line_two'
                             id='qwerty-shop-address-addressLineTwo'
-                            ref={register}
                         />
 
                         <label htmlFor='qwerty-shop-address-city'>City</label>
                         <input
+                        {...register('city', { required: true })}
                             type='text'
                             className={errors.city ? 'qwerty-shop-address-input-error' : ''}
                             name='city'
                             id='qwerty-shop-address-city'
-                            {...register('city', { required: true })}
-                            ref={register}
                         />
 
                         <label htmlFor='qwerty-shop-address-state'>State</label>
                         {
                             country === 'USA' ? (
                                 <Select
+                                {...register('state', {validate: validateState})}
                                     className='qwerty-shop-select'
                                     classNamePrefix="select"
-                                    id='qwerty-shop-login-country'
+                                    id='qwerty-shop-address-state'
                                     name='country'
                                     onChange={(option) => setState(option!.value)}
                                     options={states}
-                                    ref={register}
                                     styles={selectStyles}
                                     value={states.filter(({ value }) => state === value)}
                                 />
                             ) : (
-                                <input type='text' name='state' id='qwerty-shop-address-state' ref={register} />
+                                <input {...register('state', {required: true})}type='text' name='state' id='qwerty-shop-address-state' />
                             )
                         }
 
                         <label htmlFor='qwerty-shop-address-zipCode'>Zip Code</label>
                         <input
+                        {...register('zip_code', { required: true, validate: validateZipCode })}
                             type='text'
                             className={errors.zip_code ? 'qwerty-shop-address-input-error' : ''}
                             name='zip_code'
                             id='qwerty-shop-address-zipCode'
-                            {...register('zip_code', { required: true, validate: validateZipCode })}
-                            ref={register}
                         />
 
                         <label htmlFor='qwerty-shop-address-default' style={{ alignSelf: 'center' }}>Make Default?</label>
-                        <input type='checkbox' name='default' id='qwerty-shop-address-default' ref={register} />
+                        <input {...register('default')} type='checkbox' name='default' id='qwerty-shop-address-default' />
 
                         {
-                            loading && loading.called && loading.loading || testLoading ? (
+                            (loading && loading.called && loading.loading) || testLoading ? (
                                 <div className='qwerty-shop-login-loading'>
                                     <LoadingSpinner />
                                 </div>

@@ -133,13 +133,13 @@ const Item = (props: any) => {
       targetToInt &&
       (targetToInt < 1 ||
         targetToInt > CIPQS[currentCombo[0]][currentCombo[1]].quantity) &&
-      e.target.value != ""
+      e.target.value !== ""
     )
       return;
 
-    if (isIncrement && isIncrement != undefined) {
+    if (isIncrement && isIncrement !== undefined) {
       setCurrentQuantity(currentQuantity + 1);
-    } else if (!isIncrement && isIncrement != undefined) {
+    } else if (!isIncrement && isIncrement !== undefined) {
       if (currentQuantity === 1) return;
       setCurrentQuantity(currentQuantity - 1);
     } else {
@@ -195,7 +195,7 @@ const Item = (props: any) => {
                         <img
                           className="qwerty-shop-item-image-main"
                           src={image}
-                          alt="Main Display Image"
+                          alt="Main Display"
                           style={
                             idx === currentImageIdx
                               ? { opacity: 1 }
@@ -214,7 +214,7 @@ const Item = (props: any) => {
                               : "qwerty-shop-item-image-sub"
                           }
                           src={image}
-                          alt="Main Display Image"
+                          alt="Main Display"
                           onClick={() => {
                             setCurrentImageIdx(idx);
                           }}

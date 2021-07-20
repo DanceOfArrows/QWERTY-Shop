@@ -39,6 +39,7 @@ const Home = () => {
                             className='qwerty-shop-home-carousel-image'
                             src={image}
                             key={`qwerty-shop-home-carousel-image-${image}`}
+                            alt='Carousel Img'
                         />
                     ))}
                 </Slider>

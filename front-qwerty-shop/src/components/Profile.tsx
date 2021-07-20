@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { formatPhoneNumber, formatPhoneNumberIntl } from 'react-phone-number-input'
+import { formatPhoneNumber } from 'react-phone-number-input'
 import { NavLink } from 'react-router-dom';
 
 import { countries } from './AddAddress/select-vars';
@@ -60,7 +60,7 @@ const Profile = (props: any) => {
                                         const countryToDisplay = countries.filter((countryItem) => countryItem.value === country)[0].label;
 
                                         return (
-                                            <div key={`qwerty-shop-profile-order-${idx}`} className='qwerty-shop-profile-order-item' style={idx != 0 ? { marginTop: '48px' } : {}}>
+                                            <div key={`qwerty-shop-profile-order-${idx}`} className='qwerty-shop-profile-order-item' style={idx !== 0 ? { marginTop: '48px' } : {}}>
                                                 <div className='qwerty-shop-profile-order-text'>
                                                     <div>
                                                         <div style={{ fontWeight: 'bold' }}>Order Placed:</div>
@@ -82,7 +82,7 @@ const Profile = (props: any) => {
                                                             >{full_name}</div>
                                                             <div
                                                                 className='qwerty-shop-profile-order-address'
-                                                                style={displayAddressIdx != idx ? { opacity: 0 } : { opacity: 1 }}
+                                                                style={displayAddressIdx !== idx ? { opacity: 0 } : { opacity: 1 }}
                                                             >
                                                                 <div className='qwerty-shop-address-full_name'>{full_name}</div>
                                                                 <div>{address_line_one}</div>
@@ -115,7 +115,7 @@ const Profile = (props: any) => {
                                                                         className='qwerty-shop-cart-item'
                                                                         key={`Order-${idx}-item-${itemIdx}-variant-${itemVariationId}`}
                                                                     >
-                                                                        <img className='qwerty-shop-cart-item-image' src={image} alt='item image' />
+                                                                        <img className='qwerty-shop-cart-item-image' src={image} alt='item' />
                                                                         <div className='qwerty-shop-cart-item-info-container'>
                                                                             <NavLink to={`/item/${itemId}`} className='qwerty-shop-cart-item-info-name'>{name}</NavLink>
                                                                             <div>Option: <span className='qwerty-shop-cart-item-info-color'>{option}</span> </div>
@@ -174,7 +174,7 @@ const Profile = (props: any) => {
                                     } = address;
 
                                     const countryToDisplay = countries.filter((countryItem) => countryItem.value === country)[0].label;
-                                    if (idx != 0 && idx % 5 === 0) return null;
+                                    if (idx !== 0 && idx % 5 === 0) return null;
 
                                     return (
                                         <div
@@ -233,7 +233,7 @@ const Profile = (props: any) => {
                                 'qwerty-shop-profile-nav-label qwerty-shop-profile-nav-label-selected' :
                                 'qwerty-shop-profile-nav-label'
                         }
-                        onClick={() => { if (currentProfileTab != 'orders') setCurrentProfileTab('orders') }}
+                        onClick={() => { if (currentProfileTab !== 'orders') setCurrentProfileTab('orders') }}
                         style={{ borderRadius: '0 12px 0 0', marginTop: '24px' }}
                     >
                         Orders
@@ -244,7 +244,7 @@ const Profile = (props: any) => {
                                 'qwerty-shop-profile-nav-label qwerty-shop-profile-nav-label-selected' :
                                 'qwerty-shop-profile-nav-label'
                         }
-                        onClick={() => { if (currentProfileTab != 'addresses') setCurrentProfileTab('addresses') }}
+                        onClick={() => { if (currentProfileTab !== 'addresses') setCurrentProfileTab('addresses') }}
                     >
                         Adresses
                         </div>
