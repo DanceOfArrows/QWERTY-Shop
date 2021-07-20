@@ -680,18 +680,19 @@ $productDivs: 0, 1, 2, 3, 4, 5;
     width: 15rem;
   }
 
-  .qwerty-shop-item-name, .qwerty-shop-item-price {
+  .qwerty-shop-item-name,
+  .qwerty-shop-item-price {
     font-size: 1.2rem;
     margin: 0.25rem 0;
   }
 
- &:hover {
-   transform: scale(1.1);
+  &:hover {
+    transform: scale(1.1);
 
-   .qwerty-shop-item-name {
-     background-size: 100%;
-   }
- }
+    .qwerty-shop-item-name {
+      background-size: 100%;
+    }
+  }
 }
 
 /* Item Style */
@@ -1106,6 +1107,7 @@ $productDivs: 0, 1, 2, 3, 4, 5;
   }
 
   .qwerty-shop-profile-orders-container {
+    margin-bottom: 12px;
     max-height: 700px;
   }
 }
